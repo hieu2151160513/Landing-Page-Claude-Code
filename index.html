@@ -683,6 +683,7 @@
             position: relative;
             overflow: hidden;
             border: 1px solid rgba(201, 169, 110, 0.1);
+            cursor: pointer;
         }
         .chains-item:nth-child(1) {
             grid-row: 1 / 3;
@@ -726,6 +727,237 @@
             font-size: 1rem;
             color: var(--cream-dark);
             margin-top: 0.5rem;
+        }
+        .chains-view-hint {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold-light);
+            margin-top: 1rem;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: all 0.4s ease;
+        }
+        .chains-item:hover .chains-view-hint {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ======================== CHAIN LOCATIONS MODAL ======================== */
+        .chain-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(15px);
+            z-index: 5000;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2rem;
+            overflow-y: auto;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .chain-modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+        .chain-modal {
+            max-width: 900px;
+            width: 100%;
+            margin: 3rem auto;
+            transform: translateY(30px);
+            transition: transform 0.5s ease;
+        }
+        .chain-modal-overlay.show .chain-modal {
+            transform: translateY(0);
+        }
+        .chain-modal-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        .chain-modal-close {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            width: 48px;
+            height: 48px;
+            background: rgba(26,26,26,0.8);
+            border: 1px solid rgba(201,169,110,0.3);
+            color: var(--gold);
+            font-size: 1.4rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5001;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .chain-modal-close:hover {
+            background: var(--gold);
+            color: var(--charcoal);
+        }
+        .chain-modal-emoji {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        .chain-modal-name {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 400;
+            color: var(--cream);
+            margin-bottom: 0.5rem;
+        }
+        .chain-modal-tagline {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+        .chain-modal-divider {
+            width: 60px;
+            height: 1px;
+            background: var(--gold);
+            margin: 1.5rem auto;
+        }
+        .chain-modal-desc {
+            font-size: 1.15rem;
+            color: var(--cream-dark);
+            line-height: 1.8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Location cards */
+        .locations-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        .location-card {
+            background: var(--charcoal-light);
+            border: 1px solid rgba(201,169,110,0.1);
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+        .location-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .location-card:hover {
+            border-color: rgba(201,169,110,0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        .location-card:hover::before { opacity: 1; }
+        .location-card-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: rgba(201,169,110,0.12);
+            position: absolute;
+            top: 0.8rem;
+            right: 1.2rem;
+            line-height: 1;
+        }
+        .location-card-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--cream);
+            margin-bottom: 0.8rem;
+        }
+        .location-card-flagship {
+            display: inline-block;
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding: 0.2rem 0.7rem;
+            background: var(--gold);
+            color: var(--charcoal);
+            margin-bottom: 0.8rem;
+        }
+        .location-detail {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.7rem;
+            margin-bottom: 0.6rem;
+        }
+        .location-detail-icon {
+            flex-shrink: 0;
+            width: 18px;
+            text-align: center;
+            color: var(--gold);
+            font-size: 0.85rem;
+            margin-top: 0.15rem;
+        }
+        .location-detail-text {
+            font-size: 1rem;
+            color: var(--cream-dark);
+            line-height: 1.5;
+        }
+        .location-detail-text strong {
+            color: var(--cream);
+            font-weight: 500;
+        }
+        .location-hours {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(201,169,110,0.08);
+        }
+        .location-hours-label {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+        .location-hours-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.95rem;
+            color: var(--cream-dark);
+            margin-bottom: 0.25rem;
+        }
+        .location-hours-row span:last-child {
+            color: var(--cream);
+        }
+        .location-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-top: 0.8rem;
+        }
+        .location-status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--sage);
+            animation: statusPulse 2s ease infinite;
+        }
+        .location-status-text { color: var(--sage); }
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
         }
 
         /* ======================== TESTIMONIALS ======================== */
@@ -966,6 +1198,9 @@
             .chains-item:nth-child(1) { grid-row: auto; }
             .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
             .hero-cta-group { flex-direction: column; align-items: center; }
+            .locations-grid { grid-template-columns: 1fr; }
+            .chain-modal { margin: 1rem auto; }
+            .chain-modal-close { top: 1rem; right: 1rem; }
         }
         @media (max-width: 600px) {
             .hero-title { font-size: 2.5rem; }
@@ -977,6 +1212,8 @@
             .reservation-form { flex-direction: column; align-items: center; }
             .reservation-form input, .reservation-form select { width: 100%; }
             .custom-cursor { display: none; }
+            .location-card { padding: 1.5rem; }
+            .chain-modal-overlay { padding: 1rem; }
             .menu-modal-img { height: 220px; }
             .menu-modal-content { padding: 1.5rem; }
         }
@@ -1105,44 +1342,49 @@
             <p class="section-desc">Mỗi thương hiệu được sinh ra từ đam mê, vận hành bằng tiêu chuẩn quốc tế và phục vụ bằng cả trái tim.</p>
         </div>
         <div class="chains-gallery reveal">
-            <div class="chains-item">
+            <div class="chains-item hoverable" onclick="openChainModal('steakhouse')">
                 <div class="chains-inner">
                     <span class="chains-emoji">🥩</span>
                     <span class="chains-label">King's Steakhouse</span>
                     <span class="chains-sublabel">Premium Steaks & Grill</span>
                     <span class="chains-count">8 chi nhánh toàn quốc</span>
+                    <span class="chains-view-hint">Xem chi nhánh →</span>
                 </div>
             </div>
-            <div class="chains-item">
+            <div class="chains-item hoverable" onclick="openChainModal('sakura')">
                 <div class="chains-inner">
                     <span class="chains-emoji">🍣</span>
                     <span class="chains-label">Sakura Kitchen</span>
                     <span class="chains-sublabel">Japanese Fine Dining</span>
                     <span class="chains-count">6 chi nhánh</span>
+                    <span class="chains-view-hint">Xem chi nhánh →</span>
                 </div>
             </div>
-            <div class="chains-item">
+            <div class="chains-item hoverable" onclick="openChainModal('pho')">
                 <div class="chains-inner">
                     <span class="chains-emoji">🍜</span>
                     <span class="chains-label">Phở Hoàng Gia</span>
                     <span class="chains-sublabel">Vietnamese Heritage</span>
                     <span class="chains-count">10 chi nhánh</span>
+                    <span class="chains-view-hint">Xem chi nhánh →</span>
                 </div>
             </div>
-            <div class="chains-item">
+            <div class="chains-item hoverable" onclick="openChainModal('petit')">
                 <div class="chains-inner">
                     <span class="chains-emoji">🥐</span>
                     <span class="chains-label">Le Petit Roi</span>
                     <span class="chains-sublabel">Bakery & Coffee</span>
                     <span class="chains-count">5 chi nhánh</span>
+                    <span class="chains-view-hint">Xem chi nhánh →</span>
                 </div>
             </div>
-            <div class="chains-item">
+            <div class="chains-item hoverable" onclick="openChainModal('street')">
                 <div class="chains-inner">
                     <span class="chains-emoji">🍔</span>
                     <span class="chains-label">King Street Food</span>
                     <span class="chains-sublabel">Elevated Street Eats</span>
                     <span class="chains-count">4 chi nhánh</span>
+                    <span class="chains-view-hint">Xem chi nhánh →</span>
                 </div>
             </div>
         </div>
@@ -1211,6 +1453,21 @@
             </div>
         </div>
     </section>
+
+    <!-- Chain Locations Modal -->
+    <div class="chain-modal-overlay" id="chainModalOverlay">
+        <button class="chain-modal-close" onclick="closeChainModal()">&times;</button>
+        <div class="chain-modal">
+            <div class="chain-modal-header">
+                <span class="chain-modal-emoji" id="chainModalEmoji"></span>
+                <h2 class="chain-modal-name" id="chainModalName"></h2>
+                <p class="chain-modal-tagline" id="chainModalTagline"></p>
+                <div class="chain-modal-divider"></div>
+                <p class="chain-modal-desc" id="chainModalDesc"></p>
+            </div>
+            <div class="locations-grid" id="locationsGrid"></div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer>
@@ -1625,6 +1882,137 @@
                 v = v.slice(0, 2) + '-' + v.slice(2);
             }
             e.target.value = v;
+        });
+
+        // ======================== CHAIN LOCATIONS MODAL ========================
+        const chainData = {
+            steakhouse: {
+                emoji: '🥩',
+                name: "King's Steakhouse",
+                tagline: 'Premium Steaks & Grill',
+                desc: 'Thịt bò nhập khẩu hảo hạng, nướng trên lửa than hồng theo phong cách Mỹ - Úc. Mỗi miếng steak là một tác phẩm nghệ thuật.',
+                locations: [
+                    { name: "King's Steakhouse — Hoàn Kiếm", flagship: true, address: '15 Nhà Thờ, Hoàn Kiếm, Hà Nội', phone: '024 3926 8888', weekday: '11:00 - 23:00', weekend: '10:00 - 00:00' },
+                    { name: "King's Steakhouse — Tây Hồ", flagship: false, address: '268 Âu Cơ, Tây Hồ, Hà Nội', phone: '024 3718 9999', weekday: '11:00 - 23:00', weekend: '10:00 - 23:30' },
+                    { name: "King's Steakhouse — Thảo Điền", flagship: true, address: '42 Xuân Thủy, Thảo Điền, TP.HCM', phone: '028 3744 6666', weekday: '11:00 - 23:00', weekend: '10:00 - 00:00' },
+                    { name: "King's Steakhouse — Phú Mỹ Hưng", flagship: false, address: '89 Nguyễn Đức Cảnh, Q7, TP.HCM', phone: '028 3412 5555', weekday: '11:00 - 22:30', weekend: '10:00 - 23:00' },
+                    { name: "King's Steakhouse — Đà Nẵng", flagship: false, address: '56 Bạch Đằng, Hải Châu, Đà Nẵng', phone: '023 6388 7777', weekday: '11:00 - 22:00', weekend: '10:00 - 23:00' },
+                    { name: "King's Steakhouse — Hải Phòng", flagship: false, address: '120 Lạch Tray, Ngô Quyền, Hải Phòng', phone: '022 5381 4444', weekday: '11:00 - 22:00', weekend: '10:00 - 22:30' },
+                    { name: "King's Steakhouse — Nha Trang", flagship: false, address: '78 Trần Phú, Lộc Thọ, Nha Trang', phone: '025 8625 3333', weekday: '11:00 - 22:00', weekend: '10:00 - 23:00' },
+                    { name: "King's Steakhouse — Cần Thơ", flagship: false, address: '33 Hai Bà Trưng, Ninh Kiều, Cần Thơ', phone: '029 2381 2222', weekday: '11:00 - 22:00', weekend: '10:00 - 22:30' }
+                ]
+            },
+            sakura: {
+                emoji: '🍣',
+                name: 'Sakura Kitchen',
+                tagline: 'Japanese Fine Dining',
+                desc: 'Ẩm thực Nhật Bản chuẩn mực với nguyên liệu không kì hạn từ chợ cá Tsukiji. Sushi, sashimi và omakase đẳng cấp.',
+                locations: [
+                    { name: 'Sakura Kitchen — Ba Đình', flagship: true, address: '8 Quán Thánh, Ba Đình, Hà Nội', phone: '024 3733 1111', weekday: '11:30 - 22:00', weekend: '11:00 - 22:30' },
+                    { name: 'Sakura Kitchen — Cầu Giấy', flagship: false, address: '192 Trần Duy Hưng, Cầu Giấy, Hà Nội', phone: '024 3795 2222', weekday: '11:30 - 22:00', weekend: '11:00 - 22:30' },
+                    { name: 'Sakura Kitchen — Quận 1', flagship: true, address: '25 Tôn Đức Thắng, Quận 1, TP.HCM', phone: '028 3822 3333', weekday: '11:30 - 22:00', weekend: '11:00 - 23:00' },
+                    { name: 'Sakura Kitchen — Quận 2', flagship: false, address: '156 Nguyễn Thị Định, Quận 2, TP.HCM', phone: '028 3740 4444', weekday: '11:30 - 22:00', weekend: '11:00 - 22:30' },
+                    { name: 'Sakura Kitchen — Đà Nẵng', flagship: false, address: '98 Võ Nguyên Giáp, Sơn Trà, Đà Nẵng', phone: '023 6396 5555', weekday: '11:30 - 22:00', weekend: '11:00 - 22:30' },
+                    { name: 'Sakura Kitchen — Phú Quốc', flagship: false, address: 'Grand World, Phú Quốc, Kiên Giang', phone: '029 7398 6666', weekday: '11:00 - 22:30', weekend: '10:30 - 23:00' }
+                ]
+            },
+            pho: {
+                emoji: '🍜',
+                name: 'Phở Hoàng Gia',
+                tagline: 'Vietnamese Heritage',
+                desc: 'Tôn vinh tinh hoa ẩm thực Việt. Nước dùng ninh 24 giờ từ xương ống bò và gia vị truyền thống, phục vụ trong không gian đậm chất Hà Nội xưa.',
+                locations: [
+                    { name: 'Phở Hoàng Gia — Hàng Bông', flagship: true, address: '47 Hàng Bông, Hoàn Kiếm, Hà Nội', phone: '024 3828 0001', weekday: '6:00 - 22:00', weekend: '6:00 - 22:30' },
+                    { name: 'Phở Hoàng Gia — Đội Cấn', flagship: false, address: '156 Đội Cấn, Ba Đình, Hà Nội', phone: '024 3762 0002', weekday: '6:00 - 22:00', weekend: '6:00 - 22:00' },
+                    { name: 'Phở Hoàng Gia — Láng Hạ', flagship: false, address: '85 Láng Hạ, Đống Đa, Hà Nội', phone: '024 3514 0003', weekday: '6:00 - 22:00', weekend: '6:00 - 22:00' },
+                    { name: 'Phở Hoàng Gia — Long Biên', flagship: false, address: 'Vinhomes Riverside, Long Biên, Hà Nội', phone: '024 3652 0004', weekday: '6:30 - 21:30', weekend: '6:00 - 22:00' },
+                    { name: 'Phở Hoàng Gia — Bến Thành', flagship: true, address: '12 Lý Tự Trọng, Quận 1, TP.HCM', phone: '028 3825 0005', weekday: '6:00 - 22:00', weekend: '6:00 - 23:00' },
+                    { name: 'Phở Hoàng Gia — Thủ Đức', flagship: false, address: '234 Võ Văn Ngân, Thủ Đức, TP.HCM', phone: '028 3722 0006', weekday: '6:00 - 21:30', weekend: '6:00 - 22:00' },
+                    { name: 'Phở Hoàng Gia — Đà Nẵng', flagship: false, address: '45 Nguyễn Văn Linh, Hải Châu, Đà Nẵng', phone: '023 6356 0007', weekday: '6:00 - 21:30', weekend: '6:00 - 22:00' },
+                    { name: 'Phở Hoàng Gia — Huế', flagship: false, address: '28 Lê Lợi, TP Huế, Thừa Thiên Huế', phone: '023 4382 0008', weekday: '6:00 - 21:00', weekend: '6:00 - 21:30' },
+                    { name: 'Phở Hoàng Gia — Hải Phòng', flagship: false, address: '67 Điện Biên Phủ, Hồng Bàng, Hải Phòng', phone: '022 5384 0009', weekday: '6:00 - 21:30', weekend: '6:00 - 22:00' },
+                    { name: 'Phở Hoàng Gia — Quảng Ninh', flagship: false, address: '15 Trần Quốc Nghiễn, Hạ Long, Quảng Ninh', phone: '020 3384 0010', weekday: '6:30 - 21:00', weekend: '6:00 - 21:30' }
+                ]
+            },
+            petit: {
+                emoji: '🥐',
+                name: 'Le Petit Roi',
+                tagline: 'Bakery & Coffee',
+                desc: 'Bánh ngọt Pháp thủ công và cà phê specialty trong không gian lãng mạn kiểu Paris. Nơi lý tưởng cho những buổi hẹn hò và họp mặt ấm cúng.',
+                locations: [
+                    { name: 'Le Petit Roi — Tràng Tiền', flagship: true, address: '22 Tràng Tiền, Hoàn Kiếm, Hà Nội', phone: '024 3936 1001', weekday: '7:00 - 22:00', weekend: '7:00 - 23:00' },
+                    { name: 'Le Petit Roi — Xuân Diệu', flagship: false, address: '58 Xuân Diệu, Tây Hồ, Hà Nội', phone: '024 3719 1002', weekday: '7:00 - 22:00', weekend: '7:00 - 22:30' },
+                    { name: 'Le Petit Roi — Đồng Khởi', flagship: true, address: '35 Đồng Khởi, Quận 1, TP.HCM', phone: '028 3827 1003', weekday: '7:00 - 22:00', weekend: '7:00 - 23:00' },
+                    { name: 'Le Petit Roi — Phú Nhuận', flagship: false, address: '112 Phan Xích Long, Phú Nhuận, TP.HCM', phone: '028 3517 1004', weekday: '7:00 - 21:30', weekend: '7:00 - 22:00' },
+                    { name: 'Le Petit Roi — Hội An', flagship: false, address: '18 Bạch Đằng, Minh An, Hội An', phone: '023 5392 1005', weekday: '7:30 - 22:00', weekend: '7:00 - 22:30' }
+                ]
+            },
+            street: {
+                emoji: '🍔',
+                name: 'King Street Food',
+                tagline: 'Elevated Street Eats',
+                desc: 'Ẩm thực đường phố nâng tầm. Từ burger thủ công đến bún chả fusion, tất cả được chế biến từ nguyên liệu premium trong không gian trẻ trung, năng động.',
+                locations: [
+                    { name: 'King Street Food — Bùi Viện', flagship: true, address: '88 Bùi Viện, Quận 1, TP.HCM', phone: '028 3838 2001', weekday: '10:00 - 00:00', weekend: '10:00 - 01:00' },
+                    { name: 'King Street Food — Tạ Hiện', flagship: true, address: '5 Tạ Hiện, Hoàn Kiếm, Hà Nội', phone: '024 3926 2002', weekday: '10:00 - 00:00', weekend: '10:00 - 01:00' },
+                    { name: 'King Street Food — An Thượng', flagship: false, address: '32 An Thượng 4, Ngũ Hành Sơn, Đà Nẵng', phone: '023 6395 2003', weekday: '10:00 - 23:00', weekend: '10:00 - 00:00' },
+                    { name: 'King Street Food — Nha Trang', flagship: false, address: '15 Nguyễn Thiện Thuật, Nha Trang', phone: '025 8652 2004', weekday: '10:00 - 23:00', weekend: '10:00 - 00:00' }
+                ]
+            }
+        };
+
+        function openChainModal(chainKey) {
+            const chain = chainData[chainKey];
+            if (!chain) return;
+
+            document.getElementById('chainModalEmoji').textContent = chain.emoji;
+            document.getElementById('chainModalName').textContent = chain.name;
+            document.getElementById('chainModalTagline').textContent = chain.tagline;
+            document.getElementById('chainModalDesc').textContent = chain.desc;
+
+            const grid = document.getElementById('locationsGrid');
+            grid.innerHTML = '';
+
+            chain.locations.forEach((loc, i) => {
+                const card = document.createElement('div');
+                card.className = 'location-card';
+                card.innerHTML = `
+                    <span class="location-card-number">${String(i + 1).padStart(2, '0')}</span>
+                    ${loc.flagship ? '<span class="location-card-flagship">Flagship</span>' : ''}
+                    <h4 class="location-card-name">${loc.name}</h4>
+                    <div class="location-detail">
+                        <span class="location-detail-icon">&#9906;</span>
+                        <span class="location-detail-text">${loc.address}</span>
+                    </div>
+                    <div class="location-detail">
+                        <span class="location-detail-icon">&#9742;</span>
+                        <span class="location-detail-text">${loc.phone}</span>
+                    </div>
+                    <div class="location-hours">
+                        <div class="location-hours-label">Giờ mở cửa</div>
+                        <div class="location-hours-row"><span>T2 — T6</span><span>${loc.weekday}</span></div>
+                        <div class="location-hours-row"><span>T7 — CN</span><span>${loc.weekend}</span></div>
+                    </div>
+                    <div class="location-status">
+                        <span class="location-status-dot"></span>
+                        <span class="location-status-text">Đang mở cửa</span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            const overlay = document.getElementById('chainModalOverlay');
+            overlay.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeChainModal() {
+            document.getElementById('chainModalOverlay').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('chainModalOverlay').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('chainModalOverlay')) closeChainModal();
         });
 
         // ======================== PARALLAX SUBTLE ========================
