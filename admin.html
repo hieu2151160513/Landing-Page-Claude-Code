@@ -767,7 +767,11 @@
 
         async function loadAdminProfile(userId) {
             const { data, error } = await sb.from('admin_users').select('*').eq('user_id', userId).single();
-            if (error || !data) return null;
+            if (error) {
+                console.error('Admin profile error:', error);
+                return null;
+            }
+            if (!data) return null;
             return data;
         }
 
