@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAISON D'OR — Artisan Coffee & Fine Dining</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Josefin+Sans:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #C9A96E;
+            --gold-light: #D4BA8A;
+            --gold-dark: #A8854A;
+            --cream: #F5F0E8;
+            --cream-dark: #E8E0D0;
+            --charcoal: #1A1A1A;
+            --charcoal-light: #2D2D2D;
+            --espresso: #3C2415;
+            --mocha: #5C3D2E;
+            --ivory: #FFFFF0;
+            --sage: #8B9A7B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: var(--charcoal);
+            color: var(--cream);
+            overflow-x: hidden;
+        }
+
+        /* ======================== PRELOADER ======================== */
+        .preloader {
+            position: fixed;
+            inset: 0;
+            background: var(--charcoal);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        .preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .preloader-text {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 4rem);
+            color: var(--gold);
+            letter-spacing: 1.2em;
+            text-transform: uppercase;
+            animation: fadeInUp 1s ease forwards;
+        }
+        .preloader-line {
+            width: 60px;
+            height: 1px;
+            background: var(--gold);
+            margin-top: 2rem;
+            animation: expandLine 1.5s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes expandLine {
+            from { width: 0; }
+            to { width: 60px; }
+        }
+
+        /* ======================== CURSOR ======================== */
+        .custom-cursor {
+            width: 20px;
+            height: 20px;
+            border: 1.5px solid var(--gold);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.15s ease, opacity 0.15s ease;
+            mix-blend-mode: difference;
+        }
+        .custom-cursor.hover {
+            transform: scale(2.5);
+            background: rgba(201, 169, 110, 0.1);
+        }
+
+        /* ======================== NAVIGATION ======================== */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1.8rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.5s ease;
+            background: transparent;
+        }
+        nav.scrolled {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1.2rem 4rem;
+            border-bottom: 1px solid rgba(201, 169, 110, 0.15);
+        }
+        .nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            letter-spacing: 0.5em;
+            color: var(--gold);
+            text-transform: uppercase;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+            list-style: none;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--cream);
+            font-family: 'Josefin Sans', sans-serif;
+            font-weight: 300;
+            font-size: 0.8rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--gold);
+            transition: width 0.4s ease;
+        }
+        .nav-links a:hover { color: var(--gold); }
+        .nav-links a:hover::after { width: 100%; }
+
+        .nav-cta {
+            font-family: 'Josefin Sans', sans-serif;
+            font-weight: 300;
+            font-size: 0.75rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            padding: 0.8rem 2rem;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            text-decoration: none;
+            transition: all 0.4s ease;
+        }
+        .nav-cta:hover {
+            background: var(--gold);
+            color: var(--charcoal);
+        }
+
+        /* ======================== HERO ======================== */
+        .hero {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(135deg, rgba(26,26,26,0.92) 0%, rgba(60,36,21,0.7) 50%, rgba(26,26,26,0.92) 100%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><rect fill="%231A1A1A"/><circle cx="200" cy="300" r="400" fill="%232D2D2D" opacity="0.3"/><circle cx="900" cy="500" r="350" fill="%233C2415" opacity="0.2"/></svg>');
+            background-size: cover;
+        }
+        .hero-grain {
+            position: absolute;
+            inset: 0;
+            opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            background-size: 128px;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 900px;
+            padding: 0 2rem;
+        }
+        .hero-badge {
+            font-family: 'Josefin Sans', sans-serif;
+            font-weight: 300;
+            font-size: 0.75rem;
+            letter-spacing: 0.6em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease 1.8s forwards;
+        }
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 400;
+            line-height: 1.05;
+            color: var(--cream);
+            margin-bottom: 1rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease 2s forwards;
+        }
+        .hero-title em {
+            font-style: italic;
+            color: var(--gold);
+        }
+        .hero-title .typing-cursor {
+            display: inline-block;
+            width: 3px;
+            height: 0.85em;
+            background: var(--gold);
+            margin-left: 4px;
+            vertical-align: baseline;
+            animation: blinkCursor 0.7s step-end infinite;
+        }
+        .hero-title .typing-cursor.hidden {
+            opacity: 0;
+            animation: none;
+        }
+        @keyframes blinkCursor {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .hero-subtitle {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1rem, 2vw, 1.4rem);
+            font-weight: 300;
+            color: var(--cream-dark);
+            letter-spacing: 0.05em;
+            line-height: 1.8;
+            margin-top: 1.5rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease 2.2s forwards;
+        }
+        .hero-cta-group {
+            margin-top: 3rem;
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            opacity: 0;
+            animation: fadeInUp 1s ease 2.4s forwards;
+        }
+        .btn-primary {
+            font-family: 'Josefin Sans', sans-serif;
+            font-weight: 400;
+            font-size: 0.75rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            padding: 1.1rem 3rem;
+            background: var(--gold);
+            color: var(--charcoal);
+            border: none;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-decoration: none;
+        }
+        .btn-primary:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(201, 169, 110, 0.25);
+        }
+        .btn-secondary {
+            font-family: 'Josefin Sans', sans-serif;
+            font-weight: 300;
+            font-size: 0.75rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            padding: 1.1rem 3rem;
+            background: transparent;
+            color: var(--cream);
+            border: 1px solid rgba(245, 240, 232, 0.3);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-decoration: none;
+        }
+        .btn-secondary:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .hero-scroll {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.8rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease 2.6s forwards;
+        }
+        .hero-scroll span {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--gold-light);
+        }
+        .scroll-line {
+            width: 1px;
+            height: 50px;
+            background: linear-gradient(to bottom, var(--gold), transparent);
+            animation: scrollPulse 2s ease infinite;
+        }
+        @keyframes scrollPulse {
+            0%, 100% { opacity: 1; transform: scaleY(1); }
+            50% { opacity: 0.4; transform: scaleY(0.6); }
+        }
+
+        /* ======================== SECTION COMMON ======================== */
+        .section-divider {
+            width: 60px;
+            height: 1px;
+            background: var(--gold);
+            margin: 0 auto 2rem;
+        }
+        .section-label {
+            font-family: 'Josefin Sans', sans-serif;
+            font-weight: 300;
+            font-size: 0.7rem;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            color: var(--gold);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 400;
+            text-align: center;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+        .section-title em {
+            font-style: italic;
+            color: var(--gold);
+        }
+        .section-desc {
+            font-size: 1.15rem;
+            font-weight: 300;
+            color: var(--cream-dark);
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* reveal animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ======================== PHILOSOPHY ======================== */
+        .philosophy {
+            padding: 10rem 4rem;
+            position: relative;
+            background: var(--charcoal);
+        }
+        .philosophy-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 4rem auto 0;
+        }
+        .philosophy-card {
+            padding: 3rem 2rem;
+            border: 1px solid rgba(201, 169, 110, 0.12);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+        .philosophy-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .philosophy-card:hover::before { opacity: 1; }
+        .philosophy-card:hover {
+            border-color: rgba(201, 169, 110, 0.3);
+            transform: translateY(-5px);
+        }
+        .philosophy-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+        .philosophy-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: var(--cream);
+        }
+        .philosophy-card p {
+            font-size: 1rem;
+            font-weight: 300;
+            color: var(--cream-dark);
+            line-height: 1.8;
+        }
+
+        /* ======================== SIGNATURE MENU ======================== */
+        .menu {
+            padding: 10rem 4rem;
+            background: linear-gradient(180deg, var(--charcoal) 0%, var(--charcoal-light) 50%, var(--charcoal) 100%);
+            position: relative;
+        }
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 4rem auto 0;
+        }
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 2rem;
+            border-bottom: 1px solid rgba(201, 169, 110, 0.1);
+            transition: all 0.3s ease;
+        }
+        .menu-item:hover {
+            background: rgba(201, 169, 110, 0.03);
+            border-color: rgba(201, 169, 110, 0.25);
+        }
+        .menu-item-info h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 0.4rem;
+            color: var(--cream);
+        }
+        .menu-item-info p {
+            font-size: 0.9rem;
+            font-weight: 300;
+            color: rgba(245, 240, 232, 0.5);
+            line-height: 1.6;
+        }
+        .menu-item-tag {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--sage);
+            margin-top: 0.4rem;
+            display: inline-block;
+        }
+        .menu-item-price {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--gold);
+            white-space: nowrap;
+            margin-left: 2rem;
+        }
+
+        /* ======================== AMBIANCE ======================== */
+        .ambiance {
+            padding: 10rem 4rem;
+            background: var(--charcoal);
+        }
+        .ambiance-gallery {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 300px 300px;
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 4rem auto 0;
+        }
+        .ambiance-item {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(201, 169, 110, 0.1);
+        }
+        .ambiance-item:nth-child(1) {
+            grid-row: 1 / 3;
+        }
+        .ambiance-inner {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 2rem;
+            transition: all 0.5s ease;
+        }
+        .ambiance-item:nth-child(1) .ambiance-inner {
+            background: linear-gradient(135deg, var(--espresso), var(--mocha));
+        }
+        .ambiance-item:nth-child(2) .ambiance-inner {
+            background: linear-gradient(135deg, var(--charcoal-light), #3a3a3a);
+        }
+        .ambiance-item:nth-child(3) .ambiance-inner {
+            background: linear-gradient(135deg, #2a2018, #3d2e20);
+        }
+        .ambiance-item:nth-child(4) .ambiance-inner {
+            background: linear-gradient(135deg, #1a2a1a, #2d3d2d);
+        }
+        .ambiance-item:nth-child(5) .ambiance-inner {
+            background: linear-gradient(135deg, #2a1a2a, #3d2d3d);
+        }
+        .ambiance-item:hover .ambiance-inner {
+            transform: scale(1.03);
+        }
+        .ambiance-emoji {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .ambiance-label {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: var(--cream);
+            text-align: center;
+        }
+        .ambiance-sublabel {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-top: 0.5rem;
+        }
+
+        /* ======================== TESTIMONIALS ======================== */
+        .testimonials {
+            padding: 10rem 4rem;
+            background: linear-gradient(180deg, var(--charcoal) 0%, rgba(60,36,21,0.15) 50%, var(--charcoal) 100%);
+        }
+        .testimonial-container {
+            max-width: 800px;
+            margin: 4rem auto 0;
+            position: relative;
+            min-height: 300px;
+        }
+        .testimonial-slide {
+            text-align: center;
+            position: absolute;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+        .testimonial-slide.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .testimonial-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.3rem, 3vw, 1.8rem);
+            font-weight: 400;
+            font-style: italic;
+            line-height: 1.7;
+            color: var(--cream);
+            margin-bottom: 2rem;
+        }
+        .testimonial-quote::before {
+            content: '"';
+            font-size: 4rem;
+            color: var(--gold);
+            display: block;
+            margin-bottom: 1rem;
+            line-height: 0.5;
+        }
+        .testimonial-author {
+            font-family: 'Josefin Sans', sans-serif;
+            font-weight: 400;
+            font-size: 0.8rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--gold);
+        }
+        .testimonial-role {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 0.95rem;
+            color: var(--cream-dark);
+            margin-top: 0.3rem;
+        }
+        .testimonial-dots {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 3rem;
+        }
+        .testimonial-dot {
+            width: 8px;
+            height: 8px;
+            border: 1px solid var(--gold);
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .testimonial-dot.active {
+            background: var(--gold);
+            transform: rotate(45deg);
+        }
+
+        /* ======================== RESERVATION CTA ======================== */
+        .reservation {
+            padding: 10rem 4rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            background: var(--charcoal);
+        }
+        .reservation-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, rgba(201,169,110,0.06) 0%, transparent 70%);
+        }
+        .reservation-content {
+            position: relative;
+            z-index: 2;
+        }
+        .reservation-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 400;
+            line-height: 1.15;
+            margin-bottom: 1.5rem;
+        }
+        .reservation-title em {
+            font-style: italic;
+            color: var(--gold);
+        }
+        .reservation-desc {
+            font-size: 1.2rem;
+            font-weight: 300;
+            color: var(--cream-dark);
+            max-width: 550px;
+            margin: 0 auto 3rem;
+            line-height: 1.8;
+        }
+        .reservation-form {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .reservation-form input,
+        .reservation-form select {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            padding: 1rem 1.5rem;
+            background: rgba(245, 240, 232, 0.05);
+            border: 1px solid rgba(201, 169, 110, 0.2);
+            color: var(--cream);
+            outline: none;
+            transition: border-color 0.3s ease;
+            min-width: 200px;
+        }
+        .reservation-form input::placeholder {
+            color: rgba(245, 240, 232, 0.4);
+        }
+        .reservation-form input:focus,
+        .reservation-form select:focus {
+            border-color: var(--gold);
+        }
+        .reservation-form select option {
+            background: var(--charcoal);
+            color: var(--cream);
+        }
+        .reservation-form button {
+            font-family: 'Josefin Sans', sans-serif;
+            font-weight: 400;
+            font-size: 0.75rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            padding: 1rem 3rem;
+            background: var(--gold);
+            color: var(--charcoal);
+            border: none;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+        .reservation-form button:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(201, 169, 110, 0.25);
+        }
+
+        /* ======================== FOOTER ======================== */
+        footer {
+            padding: 6rem 4rem 3rem;
+            border-top: 1px solid rgba(201, 169, 110, 0.1);
+            background: var(--charcoal);
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .footer-brand h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--gold);
+            letter-spacing: 0.3em;
+            margin-bottom: 1rem;
+        }
+        .footer-brand p {
+            font-size: 0.95rem;
+            font-weight: 300;
+            color: var(--cream-dark);
+            line-height: 1.8;
+            max-width: 300px;
+        }
+        .footer-col h4 {
+            font-family: 'Josefin Sans', sans-serif;
+            font-weight: 400;
+            font-size: 0.7rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+        }
+        .footer-col ul {
+            list-style: none;
+        }
+        .footer-col ul li {
+            margin-bottom: 0.8rem;
+        }
+        .footer-col ul li a {
+            text-decoration: none;
+            color: var(--cream-dark);
+            font-size: 0.95rem;
+            font-weight: 300;
+            transition: color 0.3s ease;
+        }
+        .footer-col ul li a:hover {
+            color: var(--gold);
+        }
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 4rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(201, 169, 110, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footer-bottom p {
+            font-family: 'Josefin Sans', sans-serif;
+            font-weight: 300;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            color: rgba(245, 240, 232, 0.4);
+        }
+        .footer-socials {
+            display: flex;
+            gap: 1.5rem;
+        }
+        .footer-socials a {
+            color: var(--cream-dark);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s ease;
+        }
+        .footer-socials a:hover { color: var(--gold); }
+
+        /* ======================== RESPONSIVE ======================== */
+        @media (max-width: 968px) {
+            nav { padding: 1.5rem 2rem; }
+            .nav-links { display: none; }
+            .philosophy-grid { grid-template-columns: 1fr; max-width: 500px; }
+            .menu-grid { grid-template-columns: 1fr; }
+            .ambiance-gallery { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+            .ambiance-item:nth-child(1) { grid-row: auto; }
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+            .hero-cta-group { flex-direction: column; align-items: center; }
+        }
+        @media (max-width: 600px) {
+            .hero-title { font-size: 2.5rem; }
+            .ambiance-gallery { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .reservation-form { flex-direction: column; align-items: center; }
+            .reservation-form input, .reservation-form select { width: 100%; }
+            .custom-cursor { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div class="preloader" id="preloader">
+        <div class="preloader-text">Maison d'Or</div>
+        <div class="preloader-line"></div>
+    </div>
+
+    <!-- Custom Cursor -->
+    <div class="custom-cursor" id="cursor"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <a href="#" class="nav-logo">Maison d'Or</a>
+        <ul class="nav-links">
+            <li><a href="#philosophy" class="hoverable">Triết lý</a></li>
+            <li><a href="#menu" class="hoverable">Thực đơn</a></li>
+            <li><a href="#ambiance" class="hoverable">Không gian</a></li>
+            <li><a href="#testimonials" class="hoverable">Đánh giá</a></li>
+        </ul>
+        <a href="#reservation" class="nav-cta hoverable">Đặt bàn</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-grain"></div>
+        <div class="hero-content">
+            <p class="hero-badge">Since 2018 — Hanoi, Vietnam</p>
+            <h1 class="hero-title" id="hero-title"></h1>
+            <p class="hero-subtitle">
+                Mỗi tách cà phê là một hành trình. Mỗi món ăn là một câu chuyện.<br>
+                Trải nghiệm ẩm thực đỉnh cao tại trái tim Hà Nội.
+            </p>
+            <div class="hero-cta-group">
+                <a href="#reservation" class="btn-primary hoverable">Đặt bàn ngay</a>
+                <a href="#menu" class="btn-secondary hoverable">Khám phá thực đơn</a>
+            </div>
+        </div>
+        <div class="hero-scroll">
+            <span>Cuộn xuống</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- Philosophy Section -->
+    <section class="philosophy" id="philosophy">
+        <div class="reveal">
+            <div class="section-divider"></div>
+            <p class="section-label">Triết lý của chúng tôi</p>
+            <h2 class="section-title">Ba trụ cột tạo nên <em>đẳng cấp</em></h2>
+            <p class="section-desc">Chúng tôi tin rằng sự hoàn hảo nằm ở từng chi tiết nhỏ nhất — từ hạt cà phê đến cách phục vụ.</p>
+        </div>
+        <div class="philosophy-grid">
+            <div class="philosophy-card reveal">
+                <span class="philosophy-icon">☕</span>
+                <h3>Nguồn nguyên liệu</h3>
+                <p>Cà phê Arabica thượng hạng từ Đà Lạt, trà shan tuyết cổ thụ Hà Giang, và nguyên liệu hữu cơ từ các nông trại đối tác.</p>
+            </div>
+            <div class="philosophy-card reveal">
+                <span class="philosophy-icon">✦</span>
+                <h3>Nghệ thuật chế biến</h3>
+                <p>Mỗi đầu bếp của chúng tôi là một nghệ nhân. Kỹ thuật nấu ăn Pháp kết hợp tinh hoa ẩm thực Việt tạo nên hương vị độc nhất.</p>
+            </div>
+            <div class="philosophy-card reveal">
+                <span class="philosophy-icon">◈</span>
+                <h3>Trải nghiệm trọn vẹn</h3>
+                <p>Từ ánh nến lung linh, nhạc jazz nhẹ nhàng đến phong cách phục vụ tinh tế — mọi giác quan đều được chăm sóc.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section class="menu" id="menu">
+        <div class="reveal">
+            <div class="section-divider"></div>
+            <p class="section-label">Signature Collection</p>
+            <h2 class="section-title">Thực đơn <em>đặc biệt</em></h2>
+            <p class="section-desc">Những tác phẩm ẩm thực mang đậm dấu ấn Maison d'Or, được tuyển chọn và sáng tạo mỗi mùa.</p>
+        </div>
+        <div class="menu-grid reveal">
+            <div class="menu-item hoverable">
+                <div class="menu-item-info">
+                    <h4>Cà phê Đà Lạt Noir</h4>
+                    <p>Single origin, rang medium, hương chocolate đen & mật ong rừng</p>
+                    <span class="menu-item-tag">Bestseller</span>
+                </div>
+                <span class="menu-item-price">120K</span>
+            </div>
+            <div class="menu-item hoverable">
+                <div class="menu-item-info">
+                    <h4>Shan Tuyết Latte</h4>
+                    <p>Trà shan tuyết Hà Giang pha latte, foam vani Madagascar</p>
+                    <span class="menu-item-tag">Signature</span>
+                </div>
+                <span class="menu-item-price">145K</span>
+            </div>
+            <div class="menu-item hoverable">
+                <div class="menu-item-info">
+                    <h4>Beef Bourguignon Việt</h4>
+                    <p>Bò Wagyu hầm rượu vang, nấm truffle, rau củ mùa</p>
+                    <span class="menu-item-tag">Chef's Choice</span>
+                </div>
+                <span class="menu-item-price">580K</span>
+            </div>
+            <div class="menu-item hoverable">
+                <div class="menu-item-info">
+                    <h4>Phở Consommé</h4>
+                    <p>Nước dùng phở 24h trong suốt, bò tái Kobe, húng quế Ý</p>
+                    <span class="menu-item-tag">Signature</span>
+                </div>
+                <span class="menu-item-price">420K</span>
+            </div>
+            <div class="menu-item hoverable">
+                <div class="menu-item-info">
+                    <h4>Crème Brûlée Cà Phê</h4>
+                    <p>Custard cà phê Đà Lạt, đường caramel, kem tươi Hokkaido</p>
+                    <span class="menu-item-tag">New</span>
+                </div>
+                <span class="menu-item-price">185K</span>
+            </div>
+            <div class="menu-item hoverable">
+                <div class="menu-item-info">
+                    <h4>Cocktail Maison Royale</h4>
+                    <p>Hennessy XO, cold brew 18h, mật ong chanh dây, khói gỗ sồi</p>
+                    <span class="menu-item-tag">Limited</span>
+                </div>
+                <span class="menu-item-price">350K</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ambiance Section -->
+    <section class="ambiance" id="ambiance">
+        <div class="reveal">
+            <div class="section-divider"></div>
+            <p class="section-label">Không gian</p>
+            <h2 class="section-title">Được thiết kế để <em>truyền cảm hứng</em></h2>
+            <p class="section-desc">Bốn không gian riêng biệt, mỗi nơi mang một câu chuyện và cảm xúc khác nhau.</p>
+        </div>
+        <div class="ambiance-gallery reveal">
+            <div class="ambiance-item">
+                <div class="ambiance-inner">
+                    <span class="ambiance-emoji">🏛️</span>
+                    <span class="ambiance-label">The Grand Hall</span>
+                    <span class="ambiance-sublabel">Fine Dining</span>
+                </div>
+            </div>
+            <div class="ambiance-item">
+                <div class="ambiance-inner">
+                    <span class="ambiance-emoji">🕯️</span>
+                    <span class="ambiance-label">The Lounge</span>
+                    <span class="ambiance-sublabel">Cocktails & Jazz</span>
+                </div>
+            </div>
+            <div class="ambiance-item">
+                <div class="ambiance-inner">
+                    <span class="ambiance-emoji">☕</span>
+                    <span class="ambiance-label">Coffee Atelier</span>
+                    <span class="ambiance-sublabel">Specialty Coffee</span>
+                </div>
+            </div>
+            <div class="ambiance-item">
+                <div class="ambiance-inner">
+                    <span class="ambiance-emoji">🌿</span>
+                    <span class="ambiance-label">The Garden</span>
+                    <span class="ambiance-sublabel">Afternoon Tea</span>
+                </div>
+            </div>
+            <div class="ambiance-item">
+                <div class="ambiance-inner">
+                    <span class="ambiance-emoji">🍷</span>
+                    <span class="ambiance-label">Wine Cellar</span>
+                    <span class="ambiance-sublabel">Private Events</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials" id="testimonials">
+        <div class="reveal">
+            <div class="section-divider"></div>
+            <p class="section-label">Khách hàng nói gì</p>
+            <h2 class="section-title">Những <em>trải nghiệm</em> đáng nhớ</h2>
+        </div>
+        <div class="testimonial-container reveal">
+            <div class="testimonial-slide active" data-slide="0">
+                <p class="testimonial-quote">Maison d'Or không chỉ là nhà hàng, đó là một hành trình giác quan. Tách cà phê Đà Lạt Noir đã thay đổi hoàn toàn cách tôi nhìn nhận cà phê Việt Nam.</p>
+                <p class="testimonial-author">Nguyễn Minh Châu</p>
+                <p class="testimonial-role">Food Critic, Vogue Vietnam</p>
+            </div>
+            <div class="testimonial-slide" data-slide="1">
+                <p class="testimonial-quote">Sự kết hợp giữa kỹ thuật Pháp và nguyên liệu Việt tạo nên một bản giao hưởng vị giác mà tôi chưa từng nếm ở đâu trên thế giới.</p>
+                <p class="testimonial-author">Pierre Dubois</p>
+                <p class="testimonial-role">Michelin Guide Inspector</p>
+            </div>
+            <div class="testimonial-slide" data-slide="2">
+                <p class="testimonial-quote">Không gian sang trọng nhưng vẫn rất Việt Nam. Mỗi lần đến đây là mỗi lần tôi khám phá thêm điều mới mẻ từ thực đơn và sự phục vụ tận tâm.</p>
+                <p class="testimonial-author">Trần Hà My</p>
+                <p class="testimonial-role">CEO, Luxe Hospitality Group</p>
+            </div>
+        </div>
+        <div class="testimonial-dots">
+            <div class="testimonial-dot active" data-dot="0"></div>
+            <div class="testimonial-dot" data-dot="1"></div>
+            <div class="testimonial-dot" data-dot="2"></div>
+        </div>
+    </section>
+
+    <!-- Reservation Section -->
+    <section class="reservation" id="reservation">
+        <div class="reservation-bg"></div>
+        <div class="reservation-content reveal">
+            <div class="section-divider"></div>
+            <p class="section-label">Đặt bàn</p>
+            <h2 class="reservation-title">Sẵn sàng cho một<br>trải nghiệm <em>đặc biệt</em>?</h2>
+            <p class="reservation-desc">Đặt bàn ngay hôm nay để tận hưởng những khoảnh khắc ẩm thực tinh tế tại Maison d'Or.</p>
+            <div class="reservation-form">
+                <input type="text" placeholder="Họ và tên" class="hoverable" />
+                <input type="tel" placeholder="Số điện thoại" class="hoverable" />
+                <input type="date" class="hoverable" />
+                <select class="hoverable">
+                    <option value="">Số khách</option>
+                    <option value="1">1 khách</option>
+                    <option value="2">2 khách</option>
+                    <option value="3-4">3-4 khách</option>
+                    <option value="5-8">5-8 khách</option>
+                    <option value="8+">8+ khách</option>
+                </select>
+                <button class="hoverable" onclick="handleReservation()">Đặt bàn</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <h3>MAISON D'OR</h3>
+                <p>Artisan Coffee & Fine Dining tại trung tâm Hà Nội. Nơi mỗi khoảnh khắc đều trở thành nghệ thuật.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Khám phá</h4>
+                <ul>
+                    <li><a href="#philosophy" class="hoverable">Triết lý</a></li>
+                    <li><a href="#menu" class="hoverable">Thực đơn</a></li>
+                    <li><a href="#ambiance" class="hoverable">Không gian</a></li>
+                    <li><a href="#reservation" class="hoverable">Đặt bàn</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Liên hệ</h4>
+                <ul>
+                    <li><a href="#">12 Tràng Tiền, Hoàn Kiếm</a></li>
+                    <li><a href="#">Hà Nội, Việt Nam</a></li>
+                    <li><a href="tel:+84241234567">024 1234 567</a></li>
+                    <li><a href="mailto:hello@maisondor.vn">hello@maisondor.vn</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Giờ mở cửa</h4>
+                <ul>
+                    <li><a href="#">T2 - T6: 7:00 - 23:00</a></li>
+                    <li><a href="#">T7 - CN: 8:00 - 00:00</a></li>
+                    <li><a href="#">Brunch: 8:00 - 14:00</a></li>
+                    <li><a href="#">Happy Hour: 17:00 - 19:00</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 MAISON D'OR. ALL RIGHTS RESERVED.</p>
+            <div class="footer-socials">
+                <a href="#" class="hoverable">Instagram</a>
+                <a href="#" class="hoverable">Facebook</a>
+                <a href="#" class="hoverable">TikTok</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ======================== PRELOADER ========================
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('preloader').classList.add('hidden');
+                startTypingAnimation();
+            }, 2000);
+        });
+
+        // ======================== TYPING ANIMATION ========================
+        function startTypingAnimation() {
+            const titleEl = document.getElementById('hero-title');
+            // Structure: [{text, tag?}] — tag wraps the text in that element
+            const parts = [
+                { text: 'Nơi nghệ thuật' },
+                { text: '\n' },          // line break
+                { text: 'gặp gỡ ' },
+                { text: 'ẩm thực', tag: 'em' }
+            ];
+
+            const cursor = document.createElement('span');
+            cursor.className = 'typing-cursor';
+            titleEl.appendChild(cursor);
+
+            let partIndex = 0;
+            let charIndex = 0;
+            let currentNode = null;
+            const speed = 70;
+
+            function typeNext() {
+                if (partIndex >= parts.length) {
+                    // Done typing — hide cursor after a short pause
+                    setTimeout(() => cursor.classList.add('hidden'), 1500);
+                    return;
+                }
+
+                const part = parts[partIndex];
+
+                if (part.text === '\n') {
+                    titleEl.insertBefore(document.createElement('br'), cursor);
+                    partIndex++;
+                    charIndex = 0;
+                    currentNode = null;
+                    setTimeout(typeNext, speed);
+                    return;
+                }
+
+                if (charIndex === 0 && part.tag) {
+                    currentNode = document.createElement(part.tag);
+                    titleEl.insertBefore(currentNode, cursor);
+                } else if (charIndex === 0) {
+                    currentNode = document.createTextNode('');
+                    titleEl.insertBefore(currentNode, cursor);
+                }
+
+                if (part.tag) {
+                    currentNode.textContent += part.text[charIndex];
+                } else {
+                    currentNode.textContent += part.text[charIndex];
+                }
+
+                charIndex++;
+                if (charIndex >= part.text.length) {
+                    partIndex++;
+                    charIndex = 0;
+                    currentNode = null;
+                }
+
+                setTimeout(typeNext, speed);
+            }
+
+            // Small delay after preloader fades to let fadeInUp start
+            setTimeout(typeNext, 800);
+        }
+
+        // ======================== CUSTOM CURSOR ========================
+        const cursor = document.getElementById('cursor');
+        let mouseX = 0, mouseY = 0, cursorX = 0, cursorY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateCursor() {
+            cursorX += (mouseX - cursorX) * 0.15;
+            cursorY += (mouseY - cursorY) * 0.15;
+            cursor.style.left = cursorX - 10 + 'px';
+            cursor.style.top = cursorY - 10 + 'px';
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        document.querySelectorAll('.hoverable').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+
+        // ======================== NAVBAR SCROLL ========================
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            nav.classList.toggle('scrolled', window.scrollY > 80);
+        });
+
+        // ======================== REVEAL ON SCROLL ========================
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.15 });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // ======================== TESTIMONIAL SLIDER ========================
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.testimonial-slide');
+        const dots = document.querySelectorAll('.testimonial-dot');
+
+        function showSlide(index) {
+            slides.forEach(s => s.classList.remove('active'));
+            dots.forEach(d => d.classList.remove('active'));
+            slides[index].classList.add('active');
+            dots[index].classList.add('active');
+            currentSlide = index;
+        }
+
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                showSlide(parseInt(dot.dataset.dot));
+            });
+        });
+
+        setInterval(() => {
+            showSlide((currentSlide + 1) % slides.length);
+        }, 5000);
+
+        // ======================== SMOOTH SCROLL ========================
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // ======================== RESERVATION HANDLER ========================
+        function handleReservation() {
+            const inputs = document.querySelectorAll('.reservation-form input, .reservation-form select');
+            let allFilled = true;
+            inputs.forEach(input => {
+                if (!input.value) {
+                    allFilled = false;
+                    input.style.borderColor = '#e74c3c';
+                    setTimeout(() => input.style.borderColor = 'rgba(201, 169, 110, 0.2)', 2000);
+                }
+            });
+            if (allFilled) {
+                const btn = document.querySelector('.reservation-form button');
+                btn.textContent = 'ĐÃ ĐẶT BÀN ✓';
+                btn.style.background = '#8B9A7B';
+                setTimeout(() => {
+                    btn.textContent = 'ĐẶT BÀN';
+                    btn.style.background = '';
+                    inputs.forEach(i => i.value = '');
+                }, 3000);
+            }
+        }
+
+        // ======================== PARALLAX SUBTLE ========================
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero-content');
+            if (hero) {
+                hero.style.transform = `translateY(${scrolled * 0.3}px)`;
+                hero.style.opacity = 1 - (scrolled / 800);
+            }
+        });
+    </script>
+</body>
+</html>
