@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAISON D'OR — Artisan Coffee & Fine Dining</title>
+    <title>THE KING F&B — Ông Trùm Ẩm Thực</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Josefin+Sans:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <style>
         :root {
             --gold: #C9A96E;
@@ -58,7 +59,7 @@
             font-family: 'Playfair Display', serif;
             font-size: clamp(2rem, 5vw, 4rem);
             color: var(--gold);
-            letter-spacing: 1.2em;
+            letter-spacing: 0.3em;
             text-transform: uppercase;
             animation: fadeInUp 1s ease forwards;
         }
@@ -66,103 +67,87 @@
             width: 60px;
             height: 1px;
             background: var(--gold);
-            margin-top: 2rem;
-            animation: expandLine 1.5s ease forwards;
+            margin-top: 1.5rem;
+            animation: fadeInUp 1s ease 0.3s forwards;
+            opacity: 0;
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes expandLine {
-            from { width: 0; }
-            to { width: 60px; }
-        }
 
-        /* ======================== CURSOR ======================== */
+        /* ======================== CUSTOM CURSOR ======================== */
         .custom-cursor {
             width: 20px;
             height: 20px;
-            border: 1.5px solid var(--gold);
+            border: 1px solid var(--gold);
             border-radius: 50%;
             position: fixed;
             pointer-events: none;
             z-index: 9999;
-            transition: transform 0.15s ease, opacity 0.15s ease;
-            mix-blend-mode: difference;
+            transition: width 0.3s, height 0.3s, border-color 0.3s;
         }
         .custom-cursor.hover {
-            transform: scale(2.5);
-            background: rgba(201, 169, 110, 0.1);
+            width: 40px;
+            height: 40px;
+            border-color: var(--gold-light);
+            margin-left: -10px;
+            margin-top: -10px;
         }
 
         /* ======================== NAVIGATION ======================== */
         nav {
             position: fixed;
             top: 0;
-            width: 100%;
-            z-index: 1000;
-            padding: 1.8rem 4rem;
+            left: 0;
+            right: 0;
+            padding: 2rem 4rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            z-index: 1000;
             transition: all 0.5s ease;
-            background: transparent;
         }
         nav.scrolled {
+            padding: 1rem 4rem;
             background: rgba(26, 26, 26, 0.95);
             backdrop-filter: blur(20px);
-            padding: 1.2rem 4rem;
-            border-bottom: 1px solid rgba(201, 169, 110, 0.15);
         }
         .nav-logo {
             font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            letter-spacing: 0.5em;
+            font-size: 1.3rem;
             color: var(--gold);
-            text-transform: uppercase;
             text-decoration: none;
-            font-weight: 500;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
         }
         .nav-links {
             display: flex;
-            gap: 3rem;
             list-style: none;
+            gap: 3rem;
         }
         .nav-links a {
+            font-family: 'Josefin Sans', sans-serif;
+            font-weight: 300;
+            font-size: 0.7rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
             text-decoration: none;
             color: var(--cream);
-            font-family: 'Josefin Sans', sans-serif;
-            font-weight: 300;
-            font-size: 0.8rem;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            position: relative;
             transition: color 0.3s ease;
         }
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -6px;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background: var(--gold);
-            transition: width 0.4s ease;
-        }
         .nav-links a:hover { color: var(--gold); }
-        .nav-links a:hover::after { width: 100%; }
-
         .nav-cta {
             font-family: 'Josefin Sans', sans-serif;
-            font-weight: 300;
-            font-size: 0.75rem;
+            font-weight: 400;
+            font-size: 0.65rem;
             letter-spacing: 0.3em;
             text-transform: uppercase;
-            padding: 0.8rem 2rem;
-            border: 1px solid var(--gold);
-            color: var(--gold);
             text-decoration: none;
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            padding: 0.7rem 2rem;
             transition: all 0.4s ease;
         }
         .nav-cta:hover {
@@ -173,39 +158,35 @@
         /* ======================== HERO ======================== */
         .hero {
             height: 100vh;
-            position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
             overflow: hidden;
         }
         .hero-bg {
             position: absolute;
             inset: 0;
-            background:
-                linear-gradient(135deg, rgba(26,26,26,0.92) 0%, rgba(60,36,21,0.7) 50%, rgba(26,26,26,0.92) 100%),
-                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><rect fill="%231A1A1A"/><circle cx="200" cy="300" r="400" fill="%232D2D2D" opacity="0.3"/><circle cx="900" cy="500" r="350" fill="%233C2415" opacity="0.2"/></svg>');
-            background-size: cover;
+            background: radial-gradient(ellipse at 30% 50%, rgba(60,36,21,0.4) 0%, transparent 70%),
+                        radial-gradient(ellipse at 70% 50%, rgba(201,169,110,0.08) 0%, transparent 50%);
         }
         .hero-grain {
             position: absolute;
             inset: 0;
-            opacity: 0.04;
+            opacity: 0.03;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-            background-size: 128px;
         }
         .hero-content {
+            text-align: center;
             position: relative;
             z-index: 2;
-            text-align: center;
-            max-width: 900px;
             padding: 0 2rem;
         }
         .hero-badge {
             font-family: 'Josefin Sans', sans-serif;
             font-weight: 300;
-            font-size: 0.75rem;
-            letter-spacing: 0.6em;
+            font-size: 0.7rem;
+            letter-spacing: 0.5em;
             text-transform: uppercase;
             color: var(--gold);
             margin-bottom: 2rem;
@@ -244,13 +225,12 @@
             50% { opacity: 0; }
         }
         .hero-subtitle {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(1rem, 2vw, 1.4rem);
+            font-size: 1.15rem;
             font-weight: 300;
             color: var(--cream-dark);
-            letter-spacing: 0.05em;
-            line-height: 1.8;
-            margin-top: 1.5rem;
+            line-height: 1.9;
+            max-width: 600px;
+            margin: 0 auto;
             opacity: 0;
             animation: fadeInUp 1s ease 2.2s forwards;
         }
@@ -265,41 +245,36 @@
         .btn-primary {
             font-family: 'Josefin Sans', sans-serif;
             font-weight: 400;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             letter-spacing: 0.3em;
             text-transform: uppercase;
-            padding: 1.1rem 3rem;
+            text-decoration: none;
+            padding: 1rem 3rem;
             background: var(--gold);
             color: var(--charcoal);
-            border: none;
-            cursor: pointer;
             transition: all 0.4s ease;
-            text-decoration: none;
         }
         .btn-primary:hover {
             background: var(--gold-light);
             transform: translateY(-2px);
-            box-shadow: 0 10px 40px rgba(201, 169, 110, 0.25);
+            box-shadow: 0 10px 40px rgba(201,169,110,0.3);
         }
         .btn-secondary {
             font-family: 'Josefin Sans', sans-serif;
-            font-weight: 300;
-            font-size: 0.75rem;
+            font-weight: 400;
+            font-size: 0.7rem;
             letter-spacing: 0.3em;
             text-transform: uppercase;
-            padding: 1.1rem 3rem;
-            background: transparent;
-            color: var(--cream);
-            border: 1px solid rgba(245, 240, 232, 0.3);
-            cursor: pointer;
-            transition: all 0.4s ease;
             text-decoration: none;
+            padding: 1rem 3rem;
+            border: 1px solid rgba(201,169,110,0.4);
+            color: var(--gold);
+            transition: all 0.4s ease;
         }
         .btn-secondary:hover {
             border-color: var(--gold);
-            color: var(--gold);
+            background: rgba(201,169,110,0.08);
         }
-
         .hero-scroll {
             position: absolute;
             bottom: 3rem;
@@ -436,67 +411,267 @@
             line-height: 1.8;
         }
 
-        /* ======================== SIGNATURE MENU ======================== */
+        /* ======================== MENU SECTION ======================== */
         .menu {
             padding: 10rem 4rem;
             background: linear-gradient(180deg, var(--charcoal) 0%, var(--charcoal-light) 50%, var(--charcoal) 100%);
             position: relative;
         }
-        .menu-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            max-width: 1000px;
-            margin: 4rem auto 0;
-        }
-        .menu-item {
+        .menu-tabs {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            padding: 2rem;
-            border-bottom: 1px solid rgba(201, 169, 110, 0.1);
-            transition: all 0.3s ease;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            max-width: 1000px;
+            margin: 3rem auto 0;
         }
-        .menu-item:hover {
-            background: rgba(201, 169, 110, 0.03);
-            border-color: rgba(201, 169, 110, 0.25);
+        .menu-tab {
+            font-family: 'Josefin Sans', sans-serif;
+            font-weight: 400;
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding: 0.8rem 2rem;
+            background: transparent;
+            border: 1px solid rgba(201, 169, 110, 0.2);
+            color: var(--cream-dark);
+            cursor: pointer;
+            transition: all 0.4s ease;
         }
-        .menu-item-info h4 {
+        .menu-tab:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+        .menu-tab.active {
+            background: var(--gold);
+            color: var(--charcoal);
+            border-color: var(--gold);
+        }
+        .menu-panel {
+            display: none;
+            max-width: 1200px;
+            margin: 3rem auto 0;
+        }
+        .menu-panel.active {
+            display: block;
+        }
+        .menu-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        .menu-card {
+            border: 1px solid rgba(201, 169, 110, 0.1);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+        .menu-card:hover {
+            border-color: rgba(201, 169, 110, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .menu-card-img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        .menu-card:hover .menu-card-img {
+            transform: scale(1.05);
+        }
+        .menu-card-img-wrap {
+            overflow: hidden;
+            position: relative;
+        }
+        .menu-card-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.55rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding: 0.3rem 0.8rem;
+            background: var(--gold);
+            color: var(--charcoal);
+        }
+        .menu-card-body {
+            padding: 1.5rem;
+        }
+        .menu-card-body h4 {
             font-family: 'Playfair Display', serif;
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             font-weight: 500;
-            margin-bottom: 0.4rem;
             color: var(--cream);
+            margin-bottom: 0.5rem;
         }
-        .menu-item-info p {
+        .menu-card-body p {
             font-size: 0.9rem;
             font-weight: 300;
             color: rgba(245, 240, 232, 0.5);
             line-height: 1.6;
+            margin-bottom: 1rem;
         }
-        .menu-item-tag {
-            font-family: 'Josefin Sans', sans-serif;
-            font-size: 0.6rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--sage);
-            margin-top: 0.4rem;
-            display: inline-block;
+        .menu-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .menu-item-price {
+        .menu-card-price {
             font-family: 'Playfair Display', serif;
             font-size: 1.3rem;
             color: var(--gold);
-            white-space: nowrap;
-            margin-left: 2rem;
+        }
+        .menu-card-detail {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--gold-light);
+            border: 1px solid rgba(201,169,110,0.3);
+            padding: 0.4rem 1rem;
+            transition: all 0.3s ease;
+        }
+        .menu-card:hover .menu-card-detail {
+            background: rgba(201,169,110,0.1);
         }
 
-        /* ======================== AMBIANCE ======================== */
-        .ambiance {
+        /* ======================== MENU MODAL ======================== */
+        .menu-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+            z-index: 5000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .menu-modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+        .menu-modal {
+            background: var(--charcoal-light);
+            border: 1px solid rgba(201,169,110,0.2);
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            transform: translateY(30px);
+            transition: transform 0.4s ease;
+        }
+        .menu-modal-overlay.show .menu-modal {
+            transform: translateY(0);
+        }
+        .menu-modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 40px;
+            height: 40px;
+            background: rgba(26,26,26,0.8);
+            border: 1px solid rgba(201,169,110,0.3);
+            color: var(--gold);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+        .menu-modal-close:hover {
+            background: var(--gold);
+            color: var(--charcoal);
+        }
+        .menu-modal-img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            display: block;
+        }
+        .menu-modal-content {
+            padding: 2.5rem;
+        }
+        .menu-modal-content h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 500;
+            color: var(--cream);
+            margin-bottom: 0.5rem;
+        }
+        .menu-modal-chain {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+        .menu-modal-desc {
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: var(--cream-dark);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+        .menu-modal-ingredients {
+            margin-bottom: 2rem;
+        }
+        .menu-modal-ingredients h4 {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 1rem;
+        }
+        .ingredient-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .ingredient-tag {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 0.9rem;
+            padding: 0.4rem 1rem;
+            border: 1px solid rgba(201,169,110,0.15);
+            color: var(--cream-dark);
+            background: rgba(201,169,110,0.04);
+        }
+        .menu-modal-price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(201,169,110,0.1);
+        }
+        .menu-modal-price {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--gold);
+        }
+        .menu-modal-price span {
+            font-size: 1rem;
+            color: var(--cream-dark);
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        /* ======================== CHAINS (AMBIANCE) ======================== */
+        .chains {
             padding: 10rem 4rem;
             background: var(--charcoal);
         }
-        .ambiance-gallery {
+        .chains-gallery {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             grid-template-rows: 300px 300px;
@@ -504,15 +679,15 @@
             max-width: 1200px;
             margin: 4rem auto 0;
         }
-        .ambiance-item {
+        .chains-item {
             position: relative;
             overflow: hidden;
             border: 1px solid rgba(201, 169, 110, 0.1);
         }
-        .ambiance-item:nth-child(1) {
+        .chains-item:nth-child(1) {
             grid-row: 1 / 3;
         }
-        .ambiance-inner {
+        .chains-inner {
             width: 100%;
             height: 100%;
             display: flex;
@@ -522,40 +697,34 @@
             padding: 2rem;
             transition: all 0.5s ease;
         }
-        .ambiance-item:nth-child(1) .ambiance-inner {
-            background: linear-gradient(135deg, var(--espresso), var(--mocha));
-        }
-        .ambiance-item:nth-child(2) .ambiance-inner {
-            background: linear-gradient(135deg, var(--charcoal-light), #3a3a3a);
-        }
-        .ambiance-item:nth-child(3) .ambiance-inner {
-            background: linear-gradient(135deg, #2a2018, #3d2e20);
-        }
-        .ambiance-item:nth-child(4) .ambiance-inner {
-            background: linear-gradient(135deg, #1a2a1a, #2d3d2d);
-        }
-        .ambiance-item:nth-child(5) .ambiance-inner {
-            background: linear-gradient(135deg, #2a1a2a, #3d2d3d);
-        }
-        .ambiance-item:hover .ambiance-inner {
-            transform: scale(1.03);
-        }
-        .ambiance-emoji {
+        .chains-item:nth-child(1) .chains-inner { background: linear-gradient(135deg, #2a1510, #4a2820); }
+        .chains-item:nth-child(2) .chains-inner { background: linear-gradient(135deg, #1a1a2e, #2d2d44); }
+        .chains-item:nth-child(3) .chains-inner { background: linear-gradient(135deg, #2a2018, #3d2e20); }
+        .chains-item:nth-child(4) .chains-inner { background: linear-gradient(135deg, #1a2a1a, #2d3d2d); }
+        .chains-item:nth-child(5) .chains-inner { background: linear-gradient(135deg, #2a1a2a, #3d2d3d); }
+        .chains-item:hover .chains-inner { transform: scale(1.03); }
+        .chains-emoji {
             font-size: 3rem;
             margin-bottom: 1rem;
         }
-        .ambiance-label {
+        .chains-label {
             font-family: 'Playfair Display', serif;
             font-size: 1.2rem;
             color: var(--cream);
             text-align: center;
         }
-        .ambiance-sublabel {
+        .chains-sublabel {
             font-family: 'Josefin Sans', sans-serif;
             font-size: 0.65rem;
             letter-spacing: 0.3em;
             text-transform: uppercase;
             color: var(--gold);
+            margin-top: 0.5rem;
+        }
+        .chains-count {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 0.85rem;
+            color: var(--cream-dark);
             margin-top: 0.5rem;
         }
 
@@ -592,7 +761,7 @@
             margin-bottom: 2rem;
         }
         .testimonial-quote::before {
-            content: '"';
+            content: '\201C';
             font-size: 4rem;
             color: var(--gold);
             display: block;
@@ -803,26 +972,31 @@
             nav { padding: 1.5rem 2rem; }
             .nav-links { display: none; }
             .philosophy-grid { grid-template-columns: 1fr; max-width: 500px; }
-            .menu-grid { grid-template-columns: 1fr; }
-            .ambiance-gallery { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
-            .ambiance-item:nth-child(1) { grid-row: auto; }
+            .menu-cards { grid-template-columns: 1fr 1fr; }
+            .chains-gallery { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+            .chains-item:nth-child(1) { grid-row: auto; }
             .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
             .hero-cta-group { flex-direction: column; align-items: center; }
         }
         @media (max-width: 600px) {
             .hero-title { font-size: 2.5rem; }
-            .ambiance-gallery { grid-template-columns: 1fr; }
+            .menu-cards { grid-template-columns: 1fr; }
+            .menu-tabs { gap: 0.3rem; }
+            .menu-tab { padding: 0.6rem 1rem; font-size: 0.6rem; }
+            .chains-gallery { grid-template-columns: 1fr; }
             .footer-grid { grid-template-columns: 1fr; }
             .reservation-form { flex-direction: column; align-items: center; }
             .reservation-form input, .reservation-form select { width: 100%; }
             .custom-cursor { display: none; }
+            .menu-modal-img { height: 220px; }
+            .menu-modal-content { padding: 1.5rem; }
         }
     </style>
 </head>
 <body>
     <!-- Preloader -->
     <div class="preloader" id="preloader">
-        <div class="preloader-text">Maison d'Or</div>
+        <div class="preloader-text">The King F&B</div>
         <div class="preloader-line"></div>
     </div>
 
@@ -831,11 +1005,11 @@
 
     <!-- Navigation -->
     <nav id="navbar">
-        <a href="#" class="nav-logo">Maison d'Or</a>
+        <a href="#" class="nav-logo">The King F&B</a>
         <ul class="nav-links">
-            <li><a href="#philosophy" class="hoverable">Triết lý</a></li>
+            <li><a href="#philosophy" class="hoverable">Về chúng tôi</a></li>
             <li><a href="#menu" class="hoverable">Thực đơn</a></li>
-            <li><a href="#ambiance" class="hoverable">Không gian</a></li>
+            <li><a href="#chains" class="hoverable">Chuỗi nhà hàng</a></li>
             <li><a href="#testimonials" class="hoverable">Đánh giá</a></li>
         </ul>
         <a href="#reservation" class="nav-cta hoverable">Đặt bàn</a>
@@ -846,11 +1020,11 @@
         <div class="hero-bg"></div>
         <div class="hero-grain"></div>
         <div class="hero-content">
-            <p class="hero-badge">Since 2018 — Hanoi, Vietnam</p>
+            <p class="hero-badge">Since 2015 — Hanoi, Vietnam</p>
             <h1 class="hero-title" id="hero-title"></h1>
             <p class="hero-subtitle">
-                Mỗi tách cà phê là một hành trình. Mỗi món ăn là một câu chuyện.<br>
-                Trải nghiệm ẩm thực đỉnh cao tại trái tim Hà Nội.
+                Từ một nhà hàng nhỏ đến đế chế ẩm thực hàng đầu Việt Nam.<br>
+                5 thương hiệu — 30+ chi nhánh — Một đẳng cấp duy nhất.
             </p>
             <div class="hero-cta-group">
                 <a href="#reservation" class="btn-primary hoverable">Đặt bàn ngay</a>
@@ -867,25 +1041,25 @@
     <section class="philosophy" id="philosophy">
         <div class="reveal">
             <div class="section-divider"></div>
-            <p class="section-label">Triết lý của chúng tôi</p>
-            <h2 class="section-title">Ba trụ cột tạo nên <em>đẳng cấp</em></h2>
-            <p class="section-desc">Chúng tôi tin rằng sự hoàn hảo nằm ở từng chi tiết nhỏ nhất — từ hạt cà phê đến cách phục vụ.</p>
+            <p class="section-label">Tầm nhìn của ông trùm</p>
+            <h2 class="section-title">Xây dựng đế chế <em>ẩm thực</em></h2>
+            <p class="section-desc">Chúng tôi không chỉ kinh doanh nhà hàng — chúng tôi kiến tạo trải nghiệm. Mỗi thương hiệu là một câu chuyện, mỗi món ăn là một tác phẩm nghệ thuật.</p>
         </div>
         <div class="philosophy-grid">
             <div class="philosophy-card reveal">
-                <span class="philosophy-icon">☕</span>
-                <h3>Nguồn nguyên liệu</h3>
-                <p>Cà phê Arabica thượng hạng từ Đà Lạt, trà shan tuyết cổ thụ Hà Giang, và nguyên liệu hữu cơ từ các nông trại đối tác.</p>
+                <span class="philosophy-icon">👑</span>
+                <h3>Đa thương hiệu</h3>
+                <p>5 chuỗi nhà hàng phủ sóng từ fine dining, ẩm thực Nhật, đến street food cao cấp — đáp ứng mọi khẩu vị và phân khúc.</p>
             </div>
             <div class="philosophy-card reveal">
                 <span class="philosophy-icon">✦</span>
-                <h3>Nghệ thuật chế biến</h3>
-                <p>Mỗi đầu bếp của chúng tôi là một nghệ nhân. Kỹ thuật nấu ăn Pháp kết hợp tinh hoa ẩm thực Việt tạo nên hương vị độc nhất.</p>
+                <h3>Nguyên liệu đỉnh cao</h3>
+                <p>Bò Wagyu A5 nhập Nhật, hải sản tươi sống từ Phú Quốc, rau organic từ Đà Lạt — chỉ những gì tốt nhất mới đủ chuẩn.</p>
             </div>
             <div class="philosophy-card reveal">
                 <span class="philosophy-icon">◈</span>
-                <h3>Trải nghiệm trọn vẹn</h3>
-                <p>Từ ánh nến lung linh, nhạc jazz nhẹ nhàng đến phong cách phục vụ tinh tế — mọi giác quan đều được chăm sóc.</p>
+                <h3>30+ chi nhánh</h3>
+                <p>Hà Nội, TP.HCM, Đà Nẵng, Phú Quốc — hệ thống vận hành chuẩn quốc tế với chất lượng đồng nhất tại mọi điểm.</p>
             </div>
         </div>
     </section>
@@ -894,104 +1068,92 @@
     <section class="menu" id="menu">
         <div class="reveal">
             <div class="section-divider"></div>
-            <p class="section-label">Signature Collection</p>
-            <h2 class="section-title">Thực đơn <em>đặc biệt</em></h2>
-            <p class="section-desc">Những tác phẩm ẩm thực mang đậm dấu ấn Maison d'Or, được tuyển chọn và sáng tạo mỗi mùa.</p>
+            <p class="section-label">The King's Collection</p>
+            <h2 class="section-title">Thực đơn <em>phong phú</em></h2>
+            <p class="section-desc">Khám phá hàng trăm món ăn đặc sắc từ 5 chuỗi nhà hàng thuộc hệ thống The King F&B.</p>
         </div>
-        <div class="menu-grid reveal">
-            <div class="menu-item hoverable">
-                <div class="menu-item-info">
-                    <h4>Cà phê Đà Lạt Noir</h4>
-                    <p>Single origin, rang medium, hương chocolate đen & mật ong rừng</p>
-                    <span class="menu-item-tag">Bestseller</span>
-                </div>
-                <span class="menu-item-price">120K</span>
-            </div>
-            <div class="menu-item hoverable">
-                <div class="menu-item-info">
-                    <h4>Shan Tuyết Latte</h4>
-                    <p>Trà shan tuyết Hà Giang pha latte, foam vani Madagascar</p>
-                    <span class="menu-item-tag">Signature</span>
-                </div>
-                <span class="menu-item-price">145K</span>
-            </div>
-            <div class="menu-item hoverable">
-                <div class="menu-item-info">
-                    <h4>Beef Bourguignon Việt</h4>
-                    <p>Bò Wagyu hầm rượu vang, nấm truffle, rau củ mùa</p>
-                    <span class="menu-item-tag">Chef's Choice</span>
-                </div>
-                <span class="menu-item-price">580K</span>
-            </div>
-            <div class="menu-item hoverable">
-                <div class="menu-item-info">
-                    <h4>Phở Consommé</h4>
-                    <p>Nước dùng phở 24h trong suốt, bò tái Kobe, húng quế Ý</p>
-                    <span class="menu-item-tag">Signature</span>
-                </div>
-                <span class="menu-item-price">420K</span>
-            </div>
-            <div class="menu-item hoverable">
-                <div class="menu-item-info">
-                    <h4>Crème Brûlée Cà Phê</h4>
-                    <p>Custard cà phê Đà Lạt, đường caramel, kem tươi Hokkaido</p>
-                    <span class="menu-item-tag">New</span>
-                </div>
-                <span class="menu-item-price">185K</span>
-            </div>
-            <div class="menu-item hoverable">
-                <div class="menu-item-info">
-                    <h4>Cocktail Maison Royale</h4>
-                    <p>Hennessy XO, cold brew 18h, mật ong chanh dây, khói gỗ sồi</p>
-                    <span class="menu-item-tag">Limited</span>
-                </div>
-                <span class="menu-item-price">350K</span>
-            </div>
+        <div class="menu-tabs reveal">
+            <button class="menu-tab active" data-tab="steakhouse">King's Steakhouse</button>
+            <button class="menu-tab" data-tab="sakura">Sakura Kitchen</button>
+            <button class="menu-tab" data-tab="pho">Phở Hoàng Gia</button>
+            <button class="menu-tab" data-tab="petit">Le Petit Roi</button>
+            <button class="menu-tab" data-tab="street">King Street Food</button>
         </div>
+
+        <!-- Menu panels loaded dynamically from Supabase -->
+        <div id="menu-panels-container"></div>
     </section>
 
-    <!-- Ambiance Section -->
-    <section class="ambiance" id="ambiance">
+    <!-- Menu Detail Modal -->
+    <div class="menu-modal-overlay" id="menuModal">
+        <div class="menu-modal">
+            <button class="menu-modal-close" id="modalClose">&times;</button>
+            <img class="menu-modal-img" id="modalImg" src="" alt="">
+            <div class="menu-modal-content">
+                <h3 id="modalName"></h3>
+                <span class="menu-modal-chain" id="modalChain"></span>
+                <p class="menu-modal-desc" id="modalDesc"></p>
+                <div class="menu-modal-ingredients">
+                    <h4>Thành phần</h4>
+                    <div class="ingredient-list" id="modalIngredients"></div>
+                </div>
+                <div class="menu-modal-price-row">
+                    <div>
+                        <div class="menu-modal-price" id="modalPrice"></div>
+                        <span style="font-size:0.85rem;color:var(--cream-dark);">VNĐ / phần</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chains Section -->
+    <section class="chains" id="chains">
         <div class="reveal">
             <div class="section-divider"></div>
-            <p class="section-label">Không gian</p>
-            <h2 class="section-title">Được thiết kế để <em>truyền cảm hứng</em></h2>
-            <p class="section-desc">Bốn không gian riêng biệt, mỗi nơi mang một câu chuyện và cảm xúc khác nhau.</p>
+            <p class="section-label">Hệ thống chuỗi nhà hàng</p>
+            <h2 class="section-title">5 thương hiệu — Một <em>đế chế</em></h2>
+            <p class="section-desc">Mỗi thương hiệu được sinh ra từ đam mê, vận hành bằng tiêu chuẩn quốc tế và phục vụ bằng cả trái tim.</p>
         </div>
-        <div class="ambiance-gallery reveal">
-            <div class="ambiance-item">
-                <div class="ambiance-inner">
-                    <span class="ambiance-emoji">🏛️</span>
-                    <span class="ambiance-label">The Grand Hall</span>
-                    <span class="ambiance-sublabel">Fine Dining</span>
+        <div class="chains-gallery reveal">
+            <div class="chains-item">
+                <div class="chains-inner">
+                    <span class="chains-emoji">🥩</span>
+                    <span class="chains-label">King's Steakhouse</span>
+                    <span class="chains-sublabel">Premium Steaks & Grill</span>
+                    <span class="chains-count">8 chi nhánh toàn quốc</span>
                 </div>
             </div>
-            <div class="ambiance-item">
-                <div class="ambiance-inner">
-                    <span class="ambiance-emoji">🕯️</span>
-                    <span class="ambiance-label">The Lounge</span>
-                    <span class="ambiance-sublabel">Cocktails & Jazz</span>
+            <div class="chains-item">
+                <div class="chains-inner">
+                    <span class="chains-emoji">🍣</span>
+                    <span class="chains-label">Sakura Kitchen</span>
+                    <span class="chains-sublabel">Japanese Fine Dining</span>
+                    <span class="chains-count">6 chi nhánh</span>
                 </div>
             </div>
-            <div class="ambiance-item">
-                <div class="ambiance-inner">
-                    <span class="ambiance-emoji">☕</span>
-                    <span class="ambiance-label">Coffee Atelier</span>
-                    <span class="ambiance-sublabel">Specialty Coffee</span>
+            <div class="chains-item">
+                <div class="chains-inner">
+                    <span class="chains-emoji">🍜</span>
+                    <span class="chains-label">Phở Hoàng Gia</span>
+                    <span class="chains-sublabel">Vietnamese Heritage</span>
+                    <span class="chains-count">10 chi nhánh</span>
                 </div>
             </div>
-            <div class="ambiance-item">
-                <div class="ambiance-inner">
-                    <span class="ambiance-emoji">🌿</span>
-                    <span class="ambiance-label">The Garden</span>
-                    <span class="ambiance-sublabel">Afternoon Tea</span>
+            <div class="chains-item">
+                <div class="chains-inner">
+                    <span class="chains-emoji">🥐</span>
+                    <span class="chains-label">Le Petit Roi</span>
+                    <span class="chains-sublabel">Bakery & Coffee</span>
+                    <span class="chains-count">5 chi nhánh</span>
                 </div>
             </div>
-            <div class="ambiance-item">
-                <div class="ambiance-inner">
-                    <span class="ambiance-emoji">🍷</span>
-                    <span class="ambiance-label">Wine Cellar</span>
-                    <span class="ambiance-sublabel">Private Events</span>
+            <div class="chains-item">
+                <div class="chains-inner">
+                    <span class="chains-emoji">🍔</span>
+                    <span class="chains-label">King Street Food</span>
+                    <span class="chains-sublabel">Elevated Street Eats</span>
+                    <span class="chains-count">4 chi nhánh</span>
                 </div>
             </div>
         </div>
@@ -1001,22 +1163,22 @@
     <section class="testimonials" id="testimonials">
         <div class="reveal">
             <div class="section-divider"></div>
-            <p class="section-label">Khách hàng nói gì</p>
+            <p class="section-label">Đối tác & khách hàng nói gì</p>
             <h2 class="section-title">Những <em>trải nghiệm</em> đáng nhớ</h2>
         </div>
         <div class="testimonial-container reveal">
             <div class="testimonial-slide active" data-slide="0">
-                <p class="testimonial-quote">Maison d'Or không chỉ là nhà hàng, đó là một hành trình giác quan. Tách cà phê Đà Lạt Noir đã thay đổi hoàn toàn cách tôi nhìn nhận cà phê Việt Nam.</p>
+                <p class="testimonial-quote">The King F&B đã thay đổi cách người Việt nhìn nhận về ẩm thực cao cấp. Mỗi thương hiệu trong hệ thống đều mang bản sắc riêng nhưng chung một đẳng cấp.</p>
                 <p class="testimonial-author">Nguyễn Minh Châu</p>
                 <p class="testimonial-role">Food Critic, Vogue Vietnam</p>
             </div>
             <div class="testimonial-slide" data-slide="1">
-                <p class="testimonial-quote">Sự kết hợp giữa kỹ thuật Pháp và nguyên liệu Việt tạo nên một bản giao hưởng vị giác mà tôi chưa từng nếm ở đâu trên thế giới.</p>
+                <p class="testimonial-quote">Từ Phở Hoàng Gia đến King's Steakhouse, tôi ấn tượng bởi sự nhất quán trong chất lượng. Đây thực sự là một đế chế F&B đáng ngưỡng mộ.</p>
                 <p class="testimonial-author">Pierre Dubois</p>
                 <p class="testimonial-role">Michelin Guide Inspector</p>
             </div>
             <div class="testimonial-slide" data-slide="2">
-                <p class="testimonial-quote">Không gian sang trọng nhưng vẫn rất Việt Nam. Mỗi lần đến đây là mỗi lần tôi khám phá thêm điều mới mẻ từ thực đơn và sự phục vụ tận tâm.</p>
+                <p class="testimonial-quote">Hợp tác với The King F&B là quyết định đúng đắn nhất. Họ biến mỗi bữa ăn thành một sự kiện, mỗi nhà hàng thành một điểm đến.</p>
                 <p class="testimonial-author">Trần Hà My</p>
                 <p class="testimonial-role">CEO, Luxe Hospitality Group</p>
             </div>
@@ -1034,12 +1196,20 @@
         <div class="reservation-content reveal">
             <div class="section-divider"></div>
             <p class="section-label">Đặt bàn</p>
-            <h2 class="reservation-title">Sẵn sàng cho một<br>trải nghiệm <em>đặc biệt</em>?</h2>
-            <p class="reservation-desc">Đặt bàn ngay hôm nay để tận hưởng những khoảnh khắc ẩm thực tinh tế tại Maison d'Or.</p>
+            <h2 class="reservation-title">Sẵn sàng cho một<br>trải nghiệm <em>đẳng cấp</em>?</h2>
+            <p class="reservation-desc">Đặt bàn tại bất kỳ nhà hàng nào trong hệ thống The King F&B để tận hưởng ẩm thực đỉnh cao.</p>
             <div class="reservation-form">
                 <input type="text" placeholder="Họ và tên" class="hoverable" />
                 <input type="tel" placeholder="Số điện thoại" class="hoverable" />
                 <input type="date" class="hoverable" />
+                <select class="hoverable">
+                    <option value="">Chọn nhà hàng</option>
+                    <option value="steakhouse">King's Steakhouse</option>
+                    <option value="sakura">Sakura Kitchen</option>
+                    <option value="pho">Phở Hoàng Gia</option>
+                    <option value="petit">Le Petit Roi</option>
+                    <option value="street">King Street Food</option>
+                </select>
                 <select class="hoverable">
                     <option value="">Số khách</option>
                     <option value="1">1 khách</option>
@@ -1057,25 +1227,26 @@
     <footer>
         <div class="footer-grid">
             <div class="footer-brand">
-                <h3>MAISON D'OR</h3>
-                <p>Artisan Coffee & Fine Dining tại trung tâm Hà Nội. Nơi mỗi khoảnh khắc đều trở thành nghệ thuật.</p>
+                <h3>THE KING F&B</h3>
+                <p>Đế chế ẩm thực hàng đầu Việt Nam với 5 thương hiệu và hơn 30 chi nhánh trên toàn quốc. Nơi mỗi bữa ăn trở thành một trải nghiệm đẳng cấp.</p>
             </div>
             <div class="footer-col">
-                <h4>Khám phá</h4>
+                <h4>Thương hiệu</h4>
                 <ul>
-                    <li><a href="#philosophy" class="hoverable">Triết lý</a></li>
-                    <li><a href="#menu" class="hoverable">Thực đơn</a></li>
-                    <li><a href="#ambiance" class="hoverable">Không gian</a></li>
-                    <li><a href="#reservation" class="hoverable">Đặt bàn</a></li>
+                    <li><a href="#" class="hoverable">King's Steakhouse</a></li>
+                    <li><a href="#" class="hoverable">Sakura Kitchen</a></li>
+                    <li><a href="#" class="hoverable">Phở Hoàng Gia</a></li>
+                    <li><a href="#" class="hoverable">Le Petit Roi</a></li>
+                    <li><a href="#" class="hoverable">King Street Food</a></li>
                 </ul>
             </div>
             <div class="footer-col">
                 <h4>Liên hệ</h4>
                 <ul>
-                    <li><a href="#">12 Tràng Tiền, Hoàn Kiếm</a></li>
+                    <li><a href="#">Trụ sở: 12 Tràng Tiền, Hoàn Kiếm</a></li>
                     <li><a href="#">Hà Nội, Việt Nam</a></li>
                     <li><a href="tel:+84241234567">024 1234 567</a></li>
-                    <li><a href="mailto:hello@maisondor.vn">hello@maisondor.vn</a></li>
+                    <li><a href="mailto:hello@thekingfnb.vn">hello@thekingfnb.vn</a></li>
                 </ul>
             </div>
             <div class="footer-col">
@@ -1089,7 +1260,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>© 2025 MAISON D'OR. ALL RIGHTS RESERVED.</p>
+            <p>&copy; 2025 THE KING F&B. ALL RIGHTS RESERVED.</p>
             <div class="footer-socials">
                 <a href="#" class="hoverable">Instagram</a>
                 <a href="#" class="hoverable">Facebook</a>
@@ -1099,22 +1270,180 @@
     </footer>
 
     <script>
+        // ======================== SUPABASE INIT ========================
+        const SUPABASE_URL = 'https://hsvqdoxovvrrvvlnlrxo.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzdnFkb3hvdnZycnZ2bG5scnhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyOTMwODcsImV4cCI6MjA4ODg2OTA4N30.E5W44pxExrTAqfmODZvmFPqc93rsEnnTq9lVzaQGm-E';
+        let supabaseClient = null;
+        try {
+            if (window.supabase && window.supabase.createClient) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            }
+        } catch (e) {
+            console.error('Supabase init failed:', e);
+        }
+
+        // Store fetched menu data globally
+        let menuItems = [];
+
         // ======================== PRELOADER ========================
         window.addEventListener('load', () => {
+            // Always hide preloader regardless of Supabase status
             setTimeout(() => {
                 document.getElementById('preloader').classList.add('hidden');
                 startTypingAnimation();
             }, 2000);
+
+            // Retry Supabase init if it wasn't ready during script parse
+            if (!supabaseClient && window.supabase && window.supabase.createClient) {
+                try {
+                    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                } catch (e) {
+                    console.error('Supabase init failed on load:', e);
+                }
+            }
+
+            if (supabaseClient) {
+                loadMenuFromSupabase();
+            } else {
+                console.warn('Supabase not available — menu will not load');
+            }
         });
+
+        // ======================== LOAD MENU FROM SUPABASE ========================
+        async function loadMenuFromSupabase() {
+            const { data, error } = await supabaseClient
+                .from('menu_items')
+                .select('*')
+                .order('sort_order', { ascending: true });
+
+            if (error) {
+                console.error('Error loading menu:', error);
+                return;
+            }
+
+            menuItems = data;
+            renderMenuPanels(data);
+            initMenuTabs();
+            initMenuCards();
+            // Re-observe new reveal elements
+            document.querySelectorAll('.reveal:not(.visible)').forEach(el => revealObserver.observe(el));
+            // Re-bind hoverable cursor
+            document.querySelectorAll('.hoverable').forEach(el => {
+                el.addEventListener('mouseenter', () => cursorEl.classList.add('hover'));
+                el.addEventListener('mouseleave', () => cursorEl.classList.remove('hover'));
+            });
+        }
+
+        function renderMenuPanels(items) {
+            const container = document.getElementById('menu-panels-container');
+            const chains = ['steakhouse', 'sakura', 'pho', 'petit', 'street'];
+
+            chains.forEach((chainKey, idx) => {
+                const chainItems = items.filter(item => item.chain_key === chainKey);
+                if (chainItems.length === 0) return;
+
+                const panel = document.createElement('div');
+                panel.className = 'menu-panel' + (idx === 0 ? ' active' : '');
+                panel.dataset.panel = chainKey;
+
+                const cardsWrap = document.createElement('div');
+                cardsWrap.className = 'menu-cards reveal';
+
+                chainItems.forEach(item => {
+                    cardsWrap.innerHTML += `
+                        <div class="menu-card hoverable" data-dish="${item.slug}">
+                            <div class="menu-card-img-wrap">
+                                <img class="menu-card-img" src="${item.image_url}" alt="${item.name}" loading="lazy">
+                                ${item.badge ? `<span class="menu-card-badge">${item.badge}</span>` : ''}
+                            </div>
+                            <div class="menu-card-body">
+                                <h4>${item.name}</h4>
+                                <p>${item.description}</p>
+                                <div class="menu-card-footer">
+                                    <span class="menu-card-price">${item.price}</span>
+                                    <span class="menu-card-detail">Chi tiết</span>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+
+                panel.appendChild(cardsWrap);
+                container.appendChild(panel);
+            });
+        }
+
+        function initMenuTabs() {
+            const tabs = document.querySelectorAll('.menu-tab');
+            const panels = document.querySelectorAll('.menu-panel');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    panels.forEach(p => p.classList.remove('active'));
+                    tab.classList.add('active');
+                    const panel = document.querySelector(`[data-panel="${tab.dataset.tab}"]`);
+                    if (panel) {
+                        panel.classList.add('active');
+                        panel.querySelectorAll('.reveal:not(.visible)').forEach(el => revealObserver.observe(el));
+                    }
+                });
+            });
+        }
+
+        function initMenuCards() {
+            const modal = document.getElementById('menuModal');
+
+            document.querySelectorAll('.menu-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const dish = menuItems.find(d => d.slug === card.dataset.dish);
+                    if (!dish) return;
+
+                    document.getElementById('modalImg').src = dish.image_lg || dish.image_url;
+                    document.getElementById('modalImg').alt = dish.name;
+                    document.getElementById('modalName').textContent = dish.name;
+                    document.getElementById('modalChain').textContent = dish.chain;
+                    document.getElementById('modalDesc').textContent = dish.detail_desc || dish.description;
+                    document.getElementById('modalPrice').textContent = dish.price;
+
+                    const ingredientList = document.getElementById('modalIngredients');
+                    ingredientList.innerHTML = '';
+                    (dish.ingredients || []).forEach(ing => {
+                        const tag = document.createElement('span');
+                        tag.className = 'ingredient-tag';
+                        tag.textContent = ing;
+                        ingredientList.appendChild(tag);
+                    });
+
+                    modal.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+        }
+
+        // ======================== MODAL CLOSE ========================
+        const modalOverlay = document.getElementById('menuModal');
+        const modalCloseBtn = document.getElementById('modalClose');
+
+        modalCloseBtn.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) closeModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        function closeModal() {
+            modalOverlay.classList.remove('show');
+            document.body.style.overflow = '';
+        }
 
         // ======================== TYPING ANIMATION ========================
         function startTypingAnimation() {
             const titleEl = document.getElementById('hero-title');
-            // Structure: [{text, tag?}] — tag wraps the text in that element
             const parts = [
-                { text: 'Nơi nghệ thuật' },
-                { text: '\n' },          // line break
-                { text: 'gặp gỡ ' },
+                { text: 'Ông trùm' },
+                { text: '\n' },
+                { text: 'ngành ' },
                 { text: 'ẩm thực', tag: 'em' }
             ];
 
@@ -1129,7 +1458,6 @@
 
             function typeNext() {
                 if (partIndex >= parts.length) {
-                    // Done typing — hide cursor after a short pause
                     setTimeout(() => cursor.classList.add('hidden'), 1500);
                     return;
                 }
@@ -1153,11 +1481,7 @@
                     titleEl.insertBefore(currentNode, cursor);
                 }
 
-                if (part.tag) {
-                    currentNode.textContent += part.text[charIndex];
-                } else {
-                    currentNode.textContent += part.text[charIndex];
-                }
+                currentNode.textContent += part.text[charIndex];
 
                 charIndex++;
                 if (charIndex >= part.text.length) {
@@ -1169,12 +1493,11 @@
                 setTimeout(typeNext, speed);
             }
 
-            // Small delay after preloader fades to let fadeInUp start
             setTimeout(typeNext, 800);
         }
 
         // ======================== CUSTOM CURSOR ========================
-        const cursor = document.getElementById('cursor');
+        const cursorEl = document.getElementById('cursor');
         let mouseX = 0, mouseY = 0, cursorX = 0, cursorY = 0;
 
         document.addEventListener('mousemove', (e) => {
@@ -1185,15 +1508,15 @@
         function animateCursor() {
             cursorX += (mouseX - cursorX) * 0.15;
             cursorY += (mouseY - cursorY) * 0.15;
-            cursor.style.left = cursorX - 10 + 'px';
-            cursor.style.top = cursorY - 10 + 'px';
+            cursorEl.style.left = cursorX - 10 + 'px';
+            cursorEl.style.top = cursorY - 10 + 'px';
             requestAnimationFrame(animateCursor);
         }
         animateCursor();
 
         document.querySelectorAll('.hoverable').forEach(el => {
-            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+            el.addEventListener('mouseenter', () => cursorEl.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursorEl.classList.remove('hover'));
         });
 
         // ======================== NAVBAR SCROLL ========================
@@ -1203,7 +1526,6 @@
         });
 
         // ======================== REVEAL ON SCROLL ========================
-        const revealElements = document.querySelectorAll('.reveal');
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -1212,7 +1534,7 @@
             });
         }, { threshold: 0.15 });
 
-        revealElements.forEach(el => revealObserver.observe(el));
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
         // ======================== TESTIMONIAL SLIDER ========================
         let currentSlide = 0;
@@ -1248,10 +1570,13 @@
             });
         });
 
-        // ======================== RESERVATION HANDLER ========================
-        function handleReservation() {
-            const inputs = document.querySelectorAll('.reservation-form input, .reservation-form select');
+        // ======================== RESERVATION HANDLER (SUPABASE) ========================
+        async function handleReservation() {
+            const form = document.querySelector('.reservation-form');
+            const inputs = form.querySelectorAll('input, select');
+            const btn = form.querySelector('button');
             let allFilled = true;
+
             inputs.forEach(input => {
                 if (!input.value) {
                     allFilled = false;
@@ -1259,16 +1584,45 @@
                     setTimeout(() => input.style.borderColor = 'rgba(201, 169, 110, 0.2)', 2000);
                 }
             });
-            if (allFilled) {
-                const btn = document.querySelector('.reservation-form button');
-                btn.textContent = 'ĐÃ ĐẶT BÀN ✓';
-                btn.style.background = '#8B9A7B';
+
+            if (!allFilled) return;
+
+            // Disable button while saving
+            btn.disabled = true;
+            btn.textContent = 'ĐANG GỬI...';
+
+            const [nameInput, phoneInput, dateInput, restaurantSelect, guestsSelect] = inputs;
+
+            const { error } = await supabaseClient
+                .from('reservations')
+                .insert({
+                    name: nameInput.value,
+                    phone: phoneInput.value,
+                    date: dateInput.value,
+                    restaurant: restaurantSelect.value,
+                    guests: guestsSelect.value
+                });
+
+            if (error) {
+                console.error('Reservation error:', error);
+                btn.textContent = 'LỖI — THỬ LẠI';
+                btn.style.background = '#e74c3c';
+                btn.disabled = false;
                 setTimeout(() => {
                     btn.textContent = 'ĐẶT BÀN';
                     btn.style.background = '';
-                    inputs.forEach(i => i.value = '');
                 }, 3000);
+                return;
             }
+
+            btn.textContent = 'ĐÃ ĐẶT BÀN THÀNH CÔNG ✓';
+            btn.style.background = '#8B9A7B';
+            setTimeout(() => {
+                btn.textContent = 'ĐẶT BÀN';
+                btn.style.background = '';
+                btn.disabled = false;
+                inputs.forEach(i => i.value = '');
+            }, 3000);
         }
 
         // ======================== PARALLAX SUBTLE ========================
