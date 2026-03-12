@@ -1587,6 +1587,11 @@
 
             if (!allFilled) return;
 
+            if (!supabaseClient) {
+                alert('Hệ thống đang tải, vui lòng thử lại sau vài giây.');
+                return;
+            }
+
             // Disable button while saving
             btn.disabled = true;
             btn.textContent = 'ĐANG GỬI...';
