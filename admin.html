@@ -471,6 +471,115 @@
             justify-content: center;
         }
 
+        /* ======================== IMAGE UPLOAD ======================== */
+        .upload-area {
+            border: 2px dashed rgba(201,169,110,0.25);
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            min-height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(245,240,232,0.02);
+        }
+        .upload-area:hover, .upload-area.dragover {
+            border-color: var(--gold);
+            background: rgba(201,169,110,0.05);
+        }
+        .upload-placeholder {
+            pointer-events: none;
+        }
+        .upload-icon {
+            font-size: 2.5rem;
+            color: var(--gold);
+            margin-bottom: 0.8rem;
+            line-height: 1;
+        }
+        .upload-text {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            color: var(--cream-dark);
+            margin-bottom: 0.4rem;
+        }
+        .upload-hint {
+            font-size: 0.85rem;
+            color: rgba(245,240,232,0.35);
+        }
+        .upload-preview {
+            position: relative;
+            width: 100%;
+        }
+        .upload-preview img {
+            width: 100%;
+            max-height: 250px;
+            object-fit: cover;
+            border: 1px solid rgba(201,169,110,0.15);
+            display: block;
+        }
+        .upload-remove {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            width: 32px;
+            height: 32px;
+            background: rgba(26,26,26,0.85);
+            border: 1px solid rgba(201,169,110,0.3);
+            color: var(--gold);
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        .upload-remove:hover { background: var(--red); color: #fff; border-color: var(--red); }
+        .upload-progress {
+            margin-top: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .upload-progress-bar {
+            flex: 1;
+            height: 3px;
+            background: rgba(201,169,110,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        .upload-progress-bar::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0%;
+            background: var(--gold);
+            transition: width 0.3s ease;
+        }
+        .upload-progress-bar.uploading::after {
+            width: 70%;
+            animation: uploadPulse 1.5s ease infinite;
+        }
+        .upload-progress-bar.done::after {
+            width: 100%;
+        }
+        @keyframes uploadPulse {
+            0% { width: 30%; }
+            50% { width: 70%; }
+            100% { width: 30%; }
+        }
+        .upload-progress-text {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            color: var(--cream-dark);
+            white-space: nowrap;
+        }
+
         /* ======================== LOADING ======================== */
         .loading {
             text-align: center;
@@ -608,12 +717,25 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>URL hình ảnh (nhỏ)</label>
-                    <input type="text" id="itemImageUrl" placeholder="https://..." />
-                </div>
-                <div class="form-group">
-                    <label>URL hình ảnh (lớn, cho modal)</label>
-                    <input type="text" id="itemImageLg" placeholder="https://..." />
+                    <label>Ảnh món ăn</label>
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-preview" id="uploadPreview" style="display:none;">
+                            <img id="uploadPreviewImg" src="" alt="Preview" />
+                            <button type="button" class="upload-remove" onclick="removeUpload()">&times;</button>
+                        </div>
+                        <div class="upload-placeholder" id="uploadPlaceholder">
+                            <div class="upload-icon">&#8682;</div>
+                            <div class="upload-text">Kéo thả ảnh vào đây hoặc bấm để chọn</div>
+                            <div class="upload-hint">PNG, JPG — Tối đa 5MB</div>
+                        </div>
+                        <input type="file" id="itemImageFile" accept="image/*" onchange="handleFileSelect(event)" style="display:none;" />
+                    </div>
+                    <input type="hidden" id="itemImageUrl" />
+                    <input type="hidden" id="itemImageLg" />
+                    <div class="upload-progress" id="uploadProgress" style="display:none;">
+                        <div class="upload-progress-bar" id="uploadProgressBar"></div>
+                        <span class="upload-progress-text" id="uploadProgressText">Đang tải lên...</span>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Nguyên liệu (phân cách bằng dấu phẩy)</label>
@@ -905,6 +1027,11 @@
             const modal = document.getElementById('menuModal');
             const title = document.getElementById('menuModalTitle');
 
+            // Reset upload state
+            pendingFile = null;
+            document.getElementById('itemImageFile').value = '';
+            document.getElementById('uploadProgress').style.display = 'none';
+
             if (item) {
                 title.textContent = 'Chỉnh sửa món';
                 document.getElementById('editItemId').value = item.id;
@@ -919,6 +1046,16 @@
                 document.getElementById('itemImageLg').value = item.image_lg || '';
                 document.getElementById('itemBadge').value = item.badge || '';
                 document.getElementById('itemIngredients').value = (item.ingredients || []).join(', ');
+
+                // Show existing image preview
+                if (item.image_url) {
+                    document.getElementById('uploadPreviewImg').src = item.image_url;
+                    document.getElementById('uploadPreview').style.display = 'block';
+                    document.getElementById('uploadPlaceholder').style.display = 'none';
+                } else {
+                    document.getElementById('uploadPreview').style.display = 'none';
+                    document.getElementById('uploadPlaceholder').style.display = '';
+                }
             } else {
                 title.textContent = 'Thêm món mới';
                 document.getElementById('editItemId').value = '';
@@ -932,6 +1069,8 @@
                 document.getElementById('itemImageLg').value = '';
                 document.getElementById('itemBadge').value = '';
                 document.getElementById('itemIngredients').value = '';
+                document.getElementById('uploadPreview').style.display = 'none';
+                document.getElementById('uploadPlaceholder').style.display = '';
                 // Pre-select current chain
                 if (currentUser.role === 'branch_manager') {
                     document.getElementById('itemChainKey').value = currentUser.assigned_chain;
@@ -973,6 +1112,24 @@
             const ingredientsRaw = document.getElementById('itemIngredients').value.trim();
             const ingredients = ingredientsRaw ? ingredientsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
 
+            // Upload image if a new file was selected
+            let imageUrl = document.getElementById('itemImageUrl').value.trim();
+            let imageLg = document.getElementById('itemImageLg').value.trim();
+
+            if (pendingFile) {
+                try {
+                    const uploadedUrl = await uploadImage(pendingFile);
+                    imageUrl = uploadedUrl;
+                    imageLg = uploadedUrl;
+                    pendingFile = null;
+                } catch (err) {
+                    toast('Lỗi upload ảnh: ' + err.message, 'error');
+                    btn.disabled = false;
+                    btn.textContent = 'LƯU';
+                    return;
+                }
+            }
+
             const payload = {
                 chain_key: chainKey,
                 chain: CHAINS[chainKey],
@@ -982,8 +1139,8 @@
                 detail_desc: document.getElementById('itemDetailDesc').value.trim(),
                 price: document.getElementById('itemPrice').value.trim(),
                 sort_order: parseInt(document.getElementById('itemSortOrder').value) || 1,
-                image_url: document.getElementById('itemImageUrl').value.trim(),
-                image_lg: document.getElementById('itemImageLg').value.trim(),
+                image_url: imageUrl,
+                image_lg: imageLg,
                 badge: document.getElementById('itemBadge').value.trim() || null,
                 ingredients
             };
@@ -1167,6 +1324,91 @@
             if (error) { toast('Lỗi: ' + error.message, 'error'); return; }
             toast('Đã xoá quyền admin', 'success');
             loadAdminUsers();
+        }
+
+        // ======================== IMAGE UPLOAD ========================
+        let pendingFile = null;
+
+        // Click to upload
+        document.getElementById('uploadArea').addEventListener('click', (e) => {
+            if (e.target.closest('.upload-remove')) return;
+            document.getElementById('itemImageFile').click();
+        });
+
+        // Drag & drop
+        const uploadArea = document.getElementById('uploadArea');
+        uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+        uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) previewFile(file);
+        });
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) previewFile(file);
+        }
+
+        function previewFile(file) {
+            if (file.size > 5 * 1024 * 1024) {
+                toast('Ảnh quá lớn. Tối đa 5MB.', 'error');
+                return;
+            }
+            pendingFile = file;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('uploadPreviewImg').src = e.target.result;
+                document.getElementById('uploadPreview').style.display = 'block';
+                document.getElementById('uploadPlaceholder').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeUpload() {
+            pendingFile = null;
+            document.getElementById('uploadPreview').style.display = 'none';
+            document.getElementById('uploadPlaceholder').style.display = '';
+            document.getElementById('uploadPreviewImg').src = '';
+            document.getElementById('itemImageFile').value = '';
+            document.getElementById('itemImageUrl').value = '';
+            document.getElementById('itemImageLg').value = '';
+        }
+
+        async function uploadImage(file) {
+            const progress = document.getElementById('uploadProgress');
+            const bar = document.getElementById('uploadProgressBar');
+            const text = document.getElementById('uploadProgressText');
+
+            progress.style.display = 'flex';
+            bar.className = 'upload-progress-bar uploading';
+            text.textContent = 'Đang tải lên...';
+
+            const ext = file.name.split('.').pop().toLowerCase();
+            const fileName = `menu/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+            const { data, error } = await sb.storage.from('menu-images').upload(fileName, file, {
+                cacheControl: '3600',
+                upsert: false
+            });
+
+            if (error) {
+                bar.className = 'upload-progress-bar';
+                text.textContent = 'Lỗi!';
+                progress.style.display = 'none';
+                throw error;
+            }
+
+            bar.className = 'upload-progress-bar done';
+            text.textContent = 'Hoàn tất!';
+
+            const { data: urlData } = sb.storage.from('menu-images').getPublicUrl(fileName);
+            const publicUrl = urlData.publicUrl;
+
+            setTimeout(() => { progress.style.display = 'none'; }, 1500);
+
+            return publicUrl;
         }
 
         // ======================== AUTO SLUG ========================
