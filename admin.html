@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE KING F&B — Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:wght@300;400;500&family=Josefin+Sans:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <style>
+        :root {
+            --gold: #C9A96E;
+            --gold-light: #D4BA8A;
+            --gold-dark: #A8854A;
+            --cream: #F5F0E8;
+            --cream-dark: #E8E0D0;
+            --charcoal: #1A1A1A;
+            --charcoal-light: #2D2D2D;
+            --espresso: #3C2415;
+            --mocha: #5C3D2E;
+            --ivory: #FFFFF0;
+            --sage: #8B9A7B;
+            --red: #e74c3c;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: var(--charcoal);
+            color: var(--cream);
+            min-height: 100vh;
+        }
+
+        /* ======================== LOGIN ======================== */
+        .login-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .login-card {
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+            padding: 3rem;
+            border: 1px solid rgba(201,169,110,0.15);
+            background: var(--charcoal-light);
+        }
+        .login-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--gold);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+        .login-subtitle {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            color: var(--cream-dark);
+            margin-bottom: 2rem;
+        }
+        .login-divider {
+            width: 60px;
+            height: 1px;
+            background: var(--gold);
+            margin: 0 auto 2rem;
+        }
+        .login-card input {
+            display: block;
+            width: 100%;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            padding: 1rem 1.5rem;
+            background: rgba(245,240,232,0.05);
+            border: 1px solid rgba(201,169,110,0.2);
+            color: var(--cream);
+            outline: none;
+            margin-bottom: 1rem;
+            transition: border-color 0.3s;
+        }
+        .login-card input::placeholder { color: rgba(245,240,232,0.4); }
+        .login-card input:focus { border-color: var(--gold); }
+        .login-btn {
+            display: block;
+            width: 100%;
+            font-family: 'Josefin Sans', sans-serif;
+            font-weight: 400;
+            font-size: 0.9rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            padding: 1rem;
+            background: var(--gold);
+            color: var(--charcoal);
+            border: none;
+            cursor: pointer;
+            transition: all 0.4s;
+            margin-top: 0.5rem;
+        }
+        .login-btn:hover { background: var(--gold-light); }
+        .login-error {
+            color: var(--red);
+            font-size: 1rem;
+            margin-top: 1rem;
+            min-height: 1.5rem;
+        }
+
+        /* ======================== TOP BAR ======================== */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            background: rgba(26,26,26,0.95);
+            border-bottom: 1px solid rgba(201,169,110,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+        }
+        .topbar-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: var(--gold);
+            letter-spacing: 0.2em;
+            text-decoration: none;
+        }
+        .topbar-center {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--cream-dark);
+        }
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .topbar-user {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.8rem;
+            color: var(--cream-dark);
+            letter-spacing: 0.1em;
+        }
+        .topbar-role {
+            font-size: 0.7rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+        .btn-outline {
+            font-family: 'Josefin Sans', sans-serif;
+            font-weight: 400;
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            padding: 0.5rem 1.2rem;
+            background: transparent;
+            border: 1px solid rgba(201,169,110,0.4);
+            color: var(--gold);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-outline:hover {
+            background: rgba(201,169,110,0.1);
+            border-color: var(--gold);
+        }
+
+        /* ======================== TABS ======================== */
+        .tabs-bar {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(201,169,110,0.08);
+        }
+        .tab-btn {
+            font-family: 'Josefin Sans', sans-serif;
+            font-weight: 400;
+            font-size: 0.85rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding: 0.7rem 1.8rem;
+            background: transparent;
+            border: 1px solid rgba(201,169,110,0.2);
+            color: var(--cream-dark);
+            cursor: pointer;
+            transition: all 0.4s;
+        }
+        .tab-btn:hover { border-color: var(--gold); color: var(--gold); }
+        .tab-btn.active { background: var(--gold); color: var(--charcoal); border-color: var(--gold); }
+
+        /* ======================== DASHBOARD ======================== */
+        .dashboard { display: none; }
+        .dashboard.show { display: block; }
+        .content-area {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .content-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--cream);
+        }
+        .btn-primary {
+            font-family: 'Josefin Sans', sans-serif;
+            font-weight: 400;
+            font-size: 0.85rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            padding: 0.8rem 2rem;
+            background: var(--gold);
+            color: var(--charcoal);
+            border: none;
+            cursor: pointer;
+            transition: all 0.4s;
+        }
+        .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+        .btn-danger {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid var(--red);
+            color: var(--red);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-danger:hover { background: var(--red); color: #fff; }
+        .btn-edit {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-edit:hover { background: rgba(201,169,110,0.1); }
+
+        /* ======================== TABLE ======================== */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid rgba(201,169,110,0.1);
+        }
+        .data-table th {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 400;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--gold);
+            background: rgba(201,169,110,0.08);
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(201,169,110,0.15);
+        }
+        .data-table td {
+            font-size: 1rem;
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid rgba(201,169,110,0.06);
+            vertical-align: middle;
+        }
+        .data-table tr:hover { background: rgba(201,169,110,0.03); }
+        .table-img {
+            width: 60px;
+            height: 45px;
+            object-fit: cover;
+            border: 1px solid rgba(201,169,110,0.1);
+        }
+        .table-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .badge-cell {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            padding: 0.2rem 0.6rem;
+            background: rgba(201,169,110,0.15);
+            color: var(--gold);
+            display: inline-block;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--cream-dark);
+            font-size: 1.2rem;
+        }
+
+        /* ======================== MODAL ======================== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+            z-index: 5000;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal {
+            background: var(--charcoal-light);
+            border: 1px solid rgba(201,169,110,0.2);
+            max-width: 650px;
+            width: 100%;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(201,169,110,0.1);
+        }
+        .modal-header h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            color: var(--cream);
+        }
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            background: transparent;
+            border: 1px solid rgba(201,169,110,0.3);
+            color: var(--gold);
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        .modal-close:hover { background: var(--gold); color: var(--charcoal); }
+        .modal-body { padding: 2rem; }
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        .form-group label {
+            display: block;
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05rem;
+            padding: 0.8rem 1rem;
+            background: rgba(245,240,232,0.05);
+            border: 1px solid rgba(201,169,110,0.2);
+            color: var(--cream);
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus { border-color: var(--gold); }
+        .form-group textarea { resize: vertical; min-height: 80px; }
+        .form-group select option { background: var(--charcoal); color: var(--cream); }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            padding: 1.5rem 2rem;
+            border-top: 1px solid rgba(201,169,110,0.1);
+        }
+        .btn-secondary {
+            font-family: 'Josefin Sans', sans-serif;
+            font-weight: 400;
+            font-size: 0.85rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            padding: 0.8rem 2rem;
+            border: 1px solid rgba(201,169,110,0.4);
+            background: transparent;
+            color: var(--gold);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-secondary:hover { background: rgba(201,169,110,0.08); }
+
+        /* ======================== TOAST ======================== */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .toast {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            padding: 1rem 1.5rem;
+            border-left: 3px solid var(--sage);
+            background: var(--charcoal-light);
+            color: var(--cream);
+            animation: toastIn 0.3s ease;
+            max-width: 350px;
+        }
+        .toast.error { border-left-color: var(--red); }
+        .toast.success { border-left-color: var(--sage); }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* ======================== CONFIRM DIALOG ======================== */
+        .confirm-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 6000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .confirm-overlay.show { display: flex; }
+        .confirm-box {
+            background: var(--charcoal-light);
+            border: 1px solid rgba(201,169,110,0.2);
+            padding: 2.5rem;
+            max-width: 400px;
+            text-align: center;
+        }
+        .confirm-box p {
+            font-size: 1.15rem;
+            color: var(--cream);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        .confirm-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        /* ======================== LOADING ======================== */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--cream-dark);
+            font-size: 1.1rem;
+        }
+
+        /* ======================== RESPONSIVE ======================== */
+        @media (max-width: 968px) {
+            .topbar { flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+            .topbar-center { order: 3; width: 100%; text-align: center; font-size: 0.75rem; }
+            .form-row { grid-template-columns: 1fr; }
+            .data-table { font-size: 0.9rem; }
+            .data-table th, .data-table td { padding: 0.6rem 0.5rem; }
+            .table-img { width: 45px; height: 35px; }
+        }
+        @media (max-width: 600px) {
+            .content-header { flex-direction: column; gap: 1rem; align-items: flex-start; }
+            .tabs-bar { gap: 0.3rem; }
+            .tab-btn { font-size: 0.75rem; padding: 0.5rem 1rem; }
+            .topbar-user { display: none; }
+            .modal-body { padding: 1.5rem; }
+            .data-table { display: block; overflow-x: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== LOGIN SCREEN ==================== -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-card">
+            <div class="login-logo">The King F&B</div>
+            <div class="login-subtitle">Admin Panel</div>
+            <div class="login-divider"></div>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <input type="email" id="loginEmail" placeholder="Email" required />
+                <input type="password" id="loginPassword" placeholder="Mật khẩu" required />
+                <button type="submit" class="login-btn" id="loginBtn">Đăng nhập</button>
+            </form>
+            <div class="login-error" id="loginError"></div>
+        </div>
+    </div>
+
+    <!-- ==================== DASHBOARD ==================== -->
+    <div class="dashboard" id="dashboard">
+        <!-- Top Bar -->
+        <div class="topbar">
+            <a href="index.html" class="topbar-logo">The King F&B</a>
+            <span class="topbar-center">Quản lý hệ thống</span>
+            <div class="topbar-right">
+                <div>
+                    <div class="topbar-user" id="topbarUser"></div>
+                    <div class="topbar-role" id="topbarRole"></div>
+                </div>
+                <button class="btn-outline" onclick="handleLogout()">Đăng xuất</button>
+            </div>
+        </div>
+
+        <!-- Chain Tabs -->
+        <div class="tabs-bar" id="tabsBar"></div>
+
+        <!-- Menu Content -->
+        <div class="content-area" id="menuContent">
+            <div class="content-header">
+                <h2 class="content-title" id="contentTitle">Menu</h2>
+                <button class="btn-primary" onclick="openMenuModal()">+ Thêm món mới</button>
+            </div>
+            <div id="menuTableWrap">
+                <div class="loading">Đang tải...</div>
+            </div>
+        </div>
+
+        <!-- Admin Users Content (super_admin only) -->
+        <div class="content-area" id="adminContent" style="display:none;">
+            <div class="content-header">
+                <h2 class="content-title">Quản lý tài khoản Admin</h2>
+                <button class="btn-primary" onclick="openAdminModal()">+ Thêm admin</button>
+            </div>
+            <div id="adminTableWrap">
+                <div class="loading">Đang tải...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MENU ITEM MODAL ==================== -->
+    <div class="modal-overlay" id="menuModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="menuModalTitle">Thêm món mới</h3>
+                <button class="modal-close" onclick="closeMenuModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editItemId" />
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nhà hàng</label>
+                        <select id="itemChainKey">
+                            <option value="steakhouse">King's Steakhouse</option>
+                            <option value="sakura">Sakura Kitchen</option>
+                            <option value="pho">Phở Hoàng Gia</option>
+                            <option value="petit">Le Petit Roi</option>
+                            <option value="street">King Street Food</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Badge (tuỳ chọn)</label>
+                        <input type="text" id="itemBadge" placeholder="VD: Best Seller, Mới" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Tên món</label>
+                    <input type="text" id="itemName" placeholder="Tên món ăn" required />
+                </div>
+                <div class="form-group">
+                    <label>Slug</label>
+                    <input type="text" id="itemSlug" placeholder="ten-mon-an (tự tạo)" />
+                </div>
+                <div class="form-group">
+                    <label>Mô tả ngắn</label>
+                    <textarea id="itemDesc" placeholder="Mô tả ngắn hiển thị trên card"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Mô tả chi tiết</label>
+                    <textarea id="itemDetailDesc" placeholder="Mô tả chi tiết hiển thị trong modal"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Giá</label>
+                        <input type="text" id="itemPrice" placeholder="VD: 350,000đ" />
+                    </div>
+                    <div class="form-group">
+                        <label>Thứ tự sắp xếp</label>
+                        <input type="number" id="itemSortOrder" placeholder="1" value="1" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>URL hình ảnh (nhỏ)</label>
+                    <input type="text" id="itemImageUrl" placeholder="https://..." />
+                </div>
+                <div class="form-group">
+                    <label>URL hình ảnh (lớn, cho modal)</label>
+                    <input type="text" id="itemImageLg" placeholder="https://..." />
+                </div>
+                <div class="form-group">
+                    <label>Nguyên liệu (phân cách bằng dấu phẩy)</label>
+                    <input type="text" id="itemIngredients" placeholder="VD: Bò wagyu, Khoai tây, Nấm truffle" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeMenuModal()">Huỷ</button>
+                <button class="btn-primary" onclick="saveMenuItem()" id="saveMenuBtn">Lưu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== ADMIN USER MODAL ==================== -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Thêm tài khoản Admin</h3>
+                <button class="modal-close" onclick="closeAdminModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="adminEmail" placeholder="admin@example.com" required />
+                </div>
+                <div class="form-group">
+                    <label>Mật khẩu</label>
+                    <input type="password" id="adminPassword" placeholder="Mật khẩu tạm thời" required />
+                </div>
+                <div class="form-group">
+                    <label>Tên hiển thị</label>
+                    <input type="text" id="adminDisplayName" placeholder="Nguyễn Văn A" />
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Vai trò</label>
+                        <select id="adminRole" onchange="toggleChainSelect()">
+                            <option value="branch_manager">Quản lý chi nhánh</option>
+                            <option value="super_admin">Super Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="chainSelectGroup">
+                        <label>Chi nhánh</label>
+                        <select id="adminChain">
+                            <option value="steakhouse">King's Steakhouse</option>
+                            <option value="sakura">Sakura Kitchen</option>
+                            <option value="pho">Phở Hoàng Gia</option>
+                            <option value="petit">Le Petit Roi</option>
+                            <option value="street">King Street Food</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeAdminModal()">Huỷ</button>
+                <button class="btn-primary" onclick="createAdmin()" id="createAdminBtn">Tạo tài khoản</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== CONFIRM DIALOG ==================== -->
+    <div class="confirm-overlay" id="confirmOverlay">
+        <div class="confirm-box">
+            <p id="confirmText">Bạn có chắc chắn?</p>
+            <div class="confirm-actions">
+                <button class="btn-secondary" onclick="closeConfirm()">Huỷ</button>
+                <button class="btn-danger" id="confirmBtn" style="padding:0.8rem 2rem;font-size:0.85rem;">Xoá</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // ======================== CONFIG ========================
+        const SUPABASE_URL = 'https://hsvqdoxovvrrvvlnlrxo.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzdnFkb3hvdnZycnZ2bG5scnhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyOTMwODcsImV4cCI6MjA4ODg2OTA4N30.E5W44pxExrTAqfmODZvmFPqc93rsEnnTq9lVzaQGm-E';
+
+        const CHAINS = {
+            steakhouse: "King's Steakhouse",
+            sakura: "Sakura Kitchen",
+            pho: "Phở Hoàng Gia",
+            petit: "Le Petit Roi",
+            street: "King Street Food"
+        };
+
+        let sb = null; // supabase client
+        let currentUser = null; // { user_id, email, role, assigned_chain, display_name }
+        let currentTab = 'steakhouse';
+
+        // ======================== INIT ========================
+        window.addEventListener('load', async () => {
+            // Wait for Supabase CDN
+            let retries = 0;
+            while ((!window.supabase || !window.supabase.createClient) && retries < 30) {
+                await new Promise(r => setTimeout(r, 200));
+                retries++;
+            }
+            if (!window.supabase || !window.supabase.createClient) {
+                document.getElementById('loginError').textContent = 'Không thể tải Supabase. Vui lòng tải lại trang.';
+                return;
+            }
+            sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+            // Check existing session
+            const { data: { session } } = await sb.auth.getSession();
+            if (session) {
+                const profile = await loadAdminProfile(session.user.id);
+                if (profile) {
+                    currentUser = profile;
+                    showDashboard();
+                } else {
+                    await sb.auth.signOut();
+                }
+            }
+        });
+
+        // ======================== AUTH ========================
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const btn = document.getElementById('loginBtn');
+            const errEl = document.getElementById('loginError');
+            errEl.textContent = '';
+            btn.disabled = true;
+            btn.textContent = 'ĐANG ĐĂNG NHẬP...';
+
+            const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                errEl.textContent = 'Sai email hoặc mật khẩu';
+                btn.disabled = false;
+                btn.textContent = 'ĐĂNG NHẬP';
+                return;
+            }
+
+            const profile = await loadAdminProfile(data.user.id);
+            if (!profile) {
+                errEl.textContent = 'Tài khoản không có quyền admin';
+                await sb.auth.signOut();
+                btn.disabled = false;
+                btn.textContent = 'ĐĂNG NHẬP';
+                return;
+            }
+
+            currentUser = profile;
+            showDashboard();
+        }
+
+        async function loadAdminProfile(userId) {
+            const { data, error } = await sb.from('admin_users').select('*').eq('user_id', userId).single();
+            if (error || !data) return null;
+            return data;
+        }
+
+        async function handleLogout() {
+            await sb.auth.signOut();
+            currentUser = null;
+            document.getElementById('dashboard').classList.remove('show');
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('loginBtn').disabled = false;
+            document.getElementById('loginBtn').textContent = 'ĐĂNG NHẬP';
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('loginError').textContent = '';
+        }
+
+        // ======================== DASHBOARD ========================
+        function showDashboard() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboard').classList.add('show');
+            document.getElementById('topbarUser').textContent = currentUser.email;
+            document.getElementById('topbarRole').textContent = currentUser.role === 'super_admin' ? 'Super Admin' : 'Quản lý ' + (CHAINS[currentUser.assigned_chain] || '');
+
+            buildTabs();
+            loadMenuItems();
+        }
+
+        function buildTabs() {
+            const bar = document.getElementById('tabsBar');
+            bar.innerHTML = '';
+
+            const chains = currentUser.role === 'super_admin'
+                ? Object.keys(CHAINS)
+                : [currentUser.assigned_chain];
+
+            // Set default tab
+            currentTab = chains[0];
+
+            chains.forEach(key => {
+                const btn = document.createElement('button');
+                btn.className = 'tab-btn' + (key === currentTab ? ' active' : '');
+                btn.textContent = CHAINS[key];
+                btn.onclick = () => switchTab(key);
+                bar.appendChild(btn);
+            });
+
+            // Super admin: add admin users tab
+            if (currentUser.role === 'super_admin') {
+                const btn = document.createElement('button');
+                btn.className = 'tab-btn';
+                btn.textContent = 'Tài khoản Admin';
+                btn.id = 'adminTab';
+                btn.onclick = () => switchTab('_admin');
+                bar.appendChild(btn);
+            }
+
+            // Lock chain select in menu modal for branch_manager
+            if (currentUser.role === 'branch_manager') {
+                const sel = document.getElementById('itemChainKey');
+                sel.value = currentUser.assigned_chain;
+                sel.disabled = true;
+            }
+        }
+
+        function switchTab(key) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+            if (key === '_admin') {
+                document.getElementById('adminTab').classList.add('active');
+                document.getElementById('menuContent').style.display = 'none';
+                document.getElementById('adminContent').style.display = 'block';
+                loadAdminUsers();
+            } else {
+                currentTab = key;
+                document.querySelector(`.tab-btn:not(#adminTab)`);
+                document.querySelectorAll('.tab-btn:not(#adminTab)').forEach(b => {
+                    if (b.textContent === CHAINS[key]) b.classList.add('active');
+                });
+                document.getElementById('menuContent').style.display = 'block';
+                document.getElementById('adminContent').style.display = 'none';
+                document.getElementById('contentTitle').textContent = 'Menu — ' + CHAINS[key];
+                loadMenuItems();
+            }
+        }
+
+        // ======================== MENU CRUD ========================
+        async function loadMenuItems() {
+            const wrap = document.getElementById('menuTableWrap');
+            wrap.innerHTML = '<div class="loading">Đang tải...</div>';
+
+            const { data, error } = await sb.from('menu_items')
+                .select('*')
+                .eq('chain_key', currentTab)
+                .order('sort_order', { ascending: true });
+
+            if (error) {
+                wrap.innerHTML = '<div class="empty-state">Lỗi tải dữ liệu</div>';
+                toast('Lỗi: ' + error.message, 'error');
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                wrap.innerHTML = '<div class="empty-state">Chưa có món nào trong nhà hàng này</div>';
+                return;
+            }
+
+            let html = `<table class="data-table">
+                <thead><tr>
+                    <th>STT</th><th>Ảnh</th><th>Tên món</th><th>Giá</th><th>Badge</th><th>Thao tác</th>
+                </tr></thead><tbody>`;
+
+            data.forEach(item => {
+                html += `<tr>
+                    <td>${item.sort_order || ''}</td>
+                    <td>${item.image_url ? `<img class="table-img" src="${item.image_url}" alt="">` : '—'}</td>
+                    <td><strong>${item.name}</strong><br><span style="color:var(--cream-dark);font-size:0.9rem">${item.description || ''}</span></td>
+                    <td style="color:var(--gold);font-family:'Playfair Display',serif">${item.price || ''}</td>
+                    <td>${item.badge ? `<span class="badge-cell">${item.badge}</span>` : '—'}</td>
+                    <td><div class="table-actions">
+                        <button class="btn-edit" onclick="editMenuItem('${item.id}')">Sửa</button>
+                        <button class="btn-danger" onclick="confirmDeleteMenu('${item.id}', '${item.name.replace(/'/g, "\\'")}')">Xoá</button>
+                    </div></td>
+                </tr>`;
+            });
+
+            html += '</tbody></table>';
+            wrap.innerHTML = html;
+        }
+
+        function openMenuModal(item = null) {
+            const modal = document.getElementById('menuModal');
+            const title = document.getElementById('menuModalTitle');
+
+            if (item) {
+                title.textContent = 'Chỉnh sửa món';
+                document.getElementById('editItemId').value = item.id;
+                document.getElementById('itemChainKey').value = item.chain_key;
+                document.getElementById('itemName').value = item.name || '';
+                document.getElementById('itemSlug').value = item.slug || '';
+                document.getElementById('itemDesc').value = item.description || '';
+                document.getElementById('itemDetailDesc').value = item.detail_desc || '';
+                document.getElementById('itemPrice').value = item.price || '';
+                document.getElementById('itemSortOrder').value = item.sort_order || 1;
+                document.getElementById('itemImageUrl').value = item.image_url || '';
+                document.getElementById('itemImageLg').value = item.image_lg || '';
+                document.getElementById('itemBadge').value = item.badge || '';
+                document.getElementById('itemIngredients').value = (item.ingredients || []).join(', ');
+            } else {
+                title.textContent = 'Thêm món mới';
+                document.getElementById('editItemId').value = '';
+                document.getElementById('itemName').value = '';
+                document.getElementById('itemSlug').value = '';
+                document.getElementById('itemDesc').value = '';
+                document.getElementById('itemDetailDesc').value = '';
+                document.getElementById('itemPrice').value = '';
+                document.getElementById('itemSortOrder').value = '1';
+                document.getElementById('itemImageUrl').value = '';
+                document.getElementById('itemImageLg').value = '';
+                document.getElementById('itemBadge').value = '';
+                document.getElementById('itemIngredients').value = '';
+                // Pre-select current chain
+                if (currentUser.role === 'branch_manager') {
+                    document.getElementById('itemChainKey').value = currentUser.assigned_chain;
+                } else {
+                    document.getElementById('itemChainKey').value = currentTab;
+                }
+            }
+
+            modal.classList.add('show');
+        }
+
+        function closeMenuModal() {
+            document.getElementById('menuModal').classList.remove('show');
+        }
+
+        async function editMenuItem(id) {
+            const { data, error } = await sb.from('menu_items').select('*').eq('id', id).single();
+            if (error) { toast('Không tìm thấy món', 'error'); return; }
+            openMenuModal(data);
+        }
+
+        async function saveMenuItem() {
+            const btn = document.getElementById('saveMenuBtn');
+            btn.disabled = true;
+            btn.textContent = 'ĐANG LƯU...';
+
+            const id = document.getElementById('editItemId').value;
+            const chainKey = document.getElementById('itemChainKey').value;
+            const name = document.getElementById('itemName').value.trim();
+
+            if (!name) {
+                toast('Vui lòng nhập tên món', 'error');
+                btn.disabled = false;
+                btn.textContent = 'LƯU';
+                return;
+            }
+
+            const slug = document.getElementById('itemSlug').value.trim() || name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+            const ingredientsRaw = document.getElementById('itemIngredients').value.trim();
+            const ingredients = ingredientsRaw ? ingredientsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+
+            const payload = {
+                chain_key: chainKey,
+                chain: CHAINS[chainKey],
+                slug,
+                name,
+                description: document.getElementById('itemDesc').value.trim(),
+                detail_desc: document.getElementById('itemDetailDesc').value.trim(),
+                price: document.getElementById('itemPrice').value.trim(),
+                sort_order: parseInt(document.getElementById('itemSortOrder').value) || 1,
+                image_url: document.getElementById('itemImageUrl').value.trim(),
+                image_lg: document.getElementById('itemImageLg').value.trim(),
+                badge: document.getElementById('itemBadge').value.trim() || null,
+                ingredients
+            };
+
+            let error;
+            if (id) {
+                ({ error } = await sb.from('menu_items').update(payload).eq('id', id));
+            } else {
+                ({ error } = await sb.from('menu_items').insert(payload));
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'LƯU';
+
+            if (error) {
+                toast('Lỗi: ' + error.message, 'error');
+                return;
+            }
+
+            toast(id ? 'Đã cập nhật món thành công' : 'Đã thêm món mới thành công', 'success');
+            closeMenuModal();
+            loadMenuItems();
+        }
+
+        let deleteTargetId = null;
+        function confirmDeleteMenu(id, name) {
+            deleteTargetId = id;
+            document.getElementById('confirmText').textContent = `Bạn có chắc muốn xoá "${name}"?`;
+            document.getElementById('confirmBtn').onclick = deleteMenuItem;
+            document.getElementById('confirmOverlay').classList.add('show');
+        }
+
+        function closeConfirm() {
+            document.getElementById('confirmOverlay').classList.remove('show');
+            deleteTargetId = null;
+        }
+
+        async function deleteMenuItem() {
+            if (!deleteTargetId) return;
+            const { error } = await sb.from('menu_items').delete().eq('id', deleteTargetId);
+            closeConfirm();
+            if (error) { toast('Lỗi xoá: ' + error.message, 'error'); return; }
+            toast('Đã xoá thành công', 'success');
+            loadMenuItems();
+        }
+
+        // ======================== ADMIN USER MANAGEMENT ========================
+        async function loadAdminUsers() {
+            const wrap = document.getElementById('adminTableWrap');
+            wrap.innerHTML = '<div class="loading">Đang tải...</div>';
+
+            const { data, error } = await sb.from('admin_users').select('*').order('created_at', { ascending: true });
+
+            if (error) {
+                wrap.innerHTML = '<div class="empty-state">Lỗi tải dữ liệu</div>';
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                wrap.innerHTML = '<div class="empty-state">Chưa có admin nào</div>';
+                return;
+            }
+
+            let html = `<table class="data-table">
+                <thead><tr>
+                    <th>Email</th><th>Tên</th><th>Vai trò</th><th>Chi nhánh</th><th>Thao tác</th>
+                </tr></thead><tbody>`;
+
+            data.forEach(u => {
+                const roleName = u.role === 'super_admin' ? 'Super Admin' : 'Quản lý CN';
+                const chainName = u.assigned_chain ? CHAINS[u.assigned_chain] : 'Tất cả';
+                const isSelf = u.user_id === currentUser.user_id;
+                html += `<tr>
+                    <td>${u.email}</td>
+                    <td>${u.display_name || '—'}</td>
+                    <td><span class="badge-cell">${roleName}</span></td>
+                    <td>${chainName}</td>
+                    <td>${isSelf ? '<span style="color:var(--cream-dark);font-size:0.85rem">Bạn</span>' : `<button class="btn-danger" onclick="confirmDeleteAdmin('${u.id}', '${u.email.replace(/'/g, "\\'")}')">Xoá</button>`}</td>
+                </tr>`;
+            });
+
+            html += '</tbody></table>';
+            wrap.innerHTML = html;
+        }
+
+        function openAdminModal() {
+            document.getElementById('adminEmail').value = '';
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('adminDisplayName').value = '';
+            document.getElementById('adminRole').value = 'branch_manager';
+            document.getElementById('adminChain').value = 'steakhouse';
+            document.getElementById('chainSelectGroup').style.display = '';
+            document.getElementById('adminModal').classList.add('show');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.remove('show');
+        }
+
+        function toggleChainSelect() {
+            const role = document.getElementById('adminRole').value;
+            document.getElementById('chainSelectGroup').style.display = role === 'super_admin' ? 'none' : '';
+        }
+
+        async function createAdmin() {
+            const btn = document.getElementById('createAdminBtn');
+            const email = document.getElementById('adminEmail').value.trim();
+            const password = document.getElementById('adminPassword').value;
+            const displayName = document.getElementById('adminDisplayName').value.trim();
+            const role = document.getElementById('adminRole').value;
+            const chain = document.getElementById('adminChain').value;
+
+            if (!email || !password) {
+                toast('Vui lòng nhập email và mật khẩu', 'error');
+                return;
+            }
+            if (password.length < 6) {
+                toast('Mật khẩu phải có ít nhất 6 ký tự', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'ĐANG TẠO...';
+
+            // Save current session info to re-login
+            const currentEmail = currentUser.email;
+
+            // Step 1: Sign up new user (this will NOT log out current user with anon key)
+            const { data: signUpData, error: signUpErr } = await sb.auth.signUp({ email, password });
+
+            if (signUpErr) {
+                toast('Lỗi tạo tài khoản: ' + signUpErr.message, 'error');
+                btn.disabled = false;
+                btn.textContent = 'TẠO TÀI KHOẢN';
+                return;
+            }
+
+            // Step 2: Insert admin_users record
+            const { error: insertErr } = await sb.from('admin_users').insert({
+                user_id: signUpData.user.id,
+                email,
+                display_name: displayName || email.split('@')[0],
+                role,
+                assigned_chain: role === 'branch_manager' ? chain : null
+            });
+
+            if (insertErr) {
+                toast('Lỗi phân quyền: ' + insertErr.message, 'error');
+                btn.disabled = false;
+                btn.textContent = 'TẠO TÀI KHOẢN';
+                return;
+            }
+
+            toast('Đã tạo admin: ' + email, 'success');
+            btn.disabled = false;
+            btn.textContent = 'TẠO TÀI KHOẢN';
+            closeAdminModal();
+            loadAdminUsers();
+
+            // Note: signUp with anon key may log out current user
+            // Re-fetch session to check
+            const { data: { session } } = await sb.auth.getSession();
+            if (!session || session.user.email !== currentEmail) {
+                toast('Phiên đăng nhập đã thay đổi. Vui lòng đăng nhập lại.', 'error');
+                setTimeout(() => handleLogout(), 2000);
+            }
+        }
+
+        let deleteAdminId = null;
+        function confirmDeleteAdmin(id, email) {
+            deleteAdminId = id;
+            document.getElementById('confirmText').textContent = `Xoá quyền admin của "${email}"?`;
+            document.getElementById('confirmBtn').onclick = deleteAdmin;
+            document.getElementById('confirmOverlay').classList.add('show');
+        }
+
+        async function deleteAdmin() {
+            if (!deleteAdminId) return;
+            const { error } = await sb.from('admin_users').delete().eq('id', deleteAdminId);
+            closeConfirm();
+            if (error) { toast('Lỗi: ' + error.message, 'error'); return; }
+            toast('Đã xoá quyền admin', 'success');
+            loadAdminUsers();
+        }
+
+        // ======================== AUTO SLUG ========================
+        document.getElementById('itemName').addEventListener('input', (e) => {
+            const slugEl = document.getElementById('itemSlug');
+            if (!document.getElementById('editItemId').value) {
+                slugEl.value = e.target.value.toLowerCase()
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                    .replace(/đ/g, 'd').replace(/Đ/g, 'D')
+                    .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+            }
+        });
+
+        // ======================== TOAST ========================
+        function toast(msg, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const el = document.createElement('div');
+            el.className = 'toast ' + type;
+            el.textContent = msg;
+            container.appendChild(el);
+            setTimeout(() => { el.remove(); }, 3500);
+        }
+    </script>
+</body>
+</html>
